@@ -6,7 +6,8 @@
       "use": "@vercel/python",
       "config": {
         "maxLambdaSize": "15mb",
-        "runtime": "python3.11"
+        "runtime": "python3.12",
+        "pipInstallCommand": "pip install -r requirements.txt && pip install mega.py --no-deps"
       }
     }
   ],
