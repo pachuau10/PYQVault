@@ -130,7 +130,7 @@ def search_suggest(request):
 
 
 def latest(request):
-    return render(request, "latest.html", {"papers": Paper.objects.all()[:20]})
+    return render(request, "latest.html", {"papers": Paper.objects.all().order_by("-created_at")[:20]})
 
 
 def robots_txt(request):

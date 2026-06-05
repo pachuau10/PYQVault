@@ -1083,6 +1083,11 @@ img { max-width: 100%; }
 .section--search { padding-top: 24px; }
 #searchResults { scroll-margin-top: 160px; }
 
+@media (max-width: 767px) {
+    .section--search { padding-top: 140px; }
+    #searchResults { scroll-margin-top: 200px; }
+}
+
 .results-count {
     font-size: 0.875rem;
     color: var(--text-muted);

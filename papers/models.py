@@ -66,6 +66,20 @@ class Paper(models.Model):
                 return self.pdf_url
         return None
 
+    @property
+    def pdf_view_url(self):
+        url = self.pdf_download_url
+        if url and "cloudinary.com" in url:
+            return url.replace("/image/upload/", "/image/upload/f_auto/")
+        return url
+
+    @property
+    def pdf_download_cloudinary_url(self):
+        url = self.pdf_download_url
+        if url and "cloudinary.com" in url:
+            return url.replace("/image/upload/", "/image/upload/fl_attachment/f_auto/")
+        return url
+
     def __str__(self):
         return self.title
 
