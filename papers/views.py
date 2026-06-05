@@ -9,8 +9,6 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.core.mail import send_mail
-from botocore.config import Config
-import boto3
 from .models import Exam, Paper, AISummary, ContactMessage
 
 DAILY_LIMIT = 3
@@ -214,6 +212,9 @@ def paper_download(request, slug):
 
 @csrf_exempt
 def generate_presigned_upload(request):
+    from botocore.config import Config
+    import boto3
+
     if not request.user.is_staff:
         return JsonResponse({'error': 'unauthorized'}, status=403)
     if request.method != 'POST':
