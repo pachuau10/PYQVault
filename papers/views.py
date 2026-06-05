@@ -133,6 +133,16 @@ def latest(request):
     return render(request, "latest.html", {"papers": Paper.objects.all()[:20]})
 
 
+def robots_txt(request):
+    return render(request, "robots.txt", content_type="text/plain")
+
+
+def sitemap_xml(request):
+    from .sitemaps import get_sitemap_urls
+    urls = get_sitemap_urls(request)
+    return render(request, "sitemap.xml", {"urls": urls}, content_type="application/xml")
+
+
 def about(request):
     total_papers = Paper.objects.count()
     total_exams = Exam.objects.count()

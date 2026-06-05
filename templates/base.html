@@ -6,18 +6,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PYQVault - Previous Year Question Papers{% endblock %}</title>
     <meta name="description" content="{% block meta_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
-    <meta property="og:title" content="PYQVault - Find Previous Year Question Papers Instantly">
-    <meta property="og:description" content="Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.">
+    <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+
+    <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+
+    <meta property="og:title" content="{% block og_title %}PYQVault - Previous Year Question Papers{% endblock %}">
+    <meta property="og:description" content="{% block og_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:image" content="{% static 'og_image.png' %}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="PYQVault">
+    <meta property="og:locale" content="en_US">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}PYQVault - Previous Year Question Papers{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
+    <meta name="twitter:image" content="{% static 'og_image.png' %}">
+
     <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+    {% block extra_head %}{% endblock %}
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "PYQVault",
+        "url": "{{ request.scheme }}://{{ request.get_host }}/",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "{{ request.scheme }}://{{ request.get_host }}/search/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "PYQVault",
+        "url": "{{ request.scheme }}://{{ request.get_host }}/",
+        "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'favicon.png' %}",
+        "description": "Free previous year question papers for JEE, NEET, MPSC, DCA, Board Exams and more."
+    }
+    </script>
 </head>
 <body class="{% if request.COOKIES.dark_mode == 'true' %}dark-mode{% endif %}">
 
