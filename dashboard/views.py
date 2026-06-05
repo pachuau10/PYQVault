@@ -21,12 +21,20 @@ def _visitor_stats():
     today = timezone.now().date()
     week_ago = today - timedelta(days=7)
     month_ago = today - timedelta(days=30)
+    qs = PageView.objects
     return {
-        "visitors_today": PageView.objects.filter(timestamp__date=today).count(),
-        "visitors_week": PageView.objects.filter(timestamp__date__gte=week_ago).count(),
-        "visitors_month": PageView.objects.filter(timestamp__date__gte=month_ago).count(),
-        "total_visitors": PageView.objects.count(),
-        "top_pages": PageView.objects.values("path").annotate(c=Count("id")).order_by("-c")[:10],
+        "views_today": qs.filter(timestamp__date=today).count(),
+        "views_week": qs.filter(timestamp__date__gte=week_ago).count(),
+        "views_month": qs.filter(timestamp__date__gte=month_ago).count(),
+        "total_views": qs.count(),
+        "visitors_today": qs.filter(timestamp__date=today).values("ip_address").distinct().count(),
+        "visitors_week": qs.filter(timestamp__date__gte=week_ago).values("ip_address").distinct().count(),
+        "visitors_month": qs.filter(timestamp__date__gte=month_ago).values("ip_address").distinct().count(),
+        "total_visitors": qs.values("ip_address").distinct().count(),
+        "top_pages": PageView.objects.values("path").annotate(
+            views=Count("id"),
+            visitors=Count("ip_address", distinct=True),
+        ).order_by("-views")[:15],
     }
 
 

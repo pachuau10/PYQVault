@@ -15,7 +15,7 @@
         </div>
         <div class="dash-stat-info">
             <span class="dash-stat-number">{{ visitors_today }}</span>
-            <span class="dash-stat-label">Today</span>
+            <span class="dash-stat-label">Unique Visitors Today</span>
         </div>
     </div>
     <div class="dash-stat-card fade-in">
@@ -24,7 +24,7 @@
         </div>
         <div class="dash-stat-info">
             <span class="dash-stat-number">{{ visitors_week }}</span>
-            <span class="dash-stat-label">This Week</span>
+            <span class="dash-stat-label">Unique This Week</span>
         </div>
     </div>
     <div class="dash-stat-card fade-in">
@@ -33,7 +33,7 @@
         </div>
         <div class="dash-stat-info">
             <span class="dash-stat-number">{{ visitors_month }}</span>
-            <span class="dash-stat-label">This Month</span>
+            <span class="dash-stat-label">Unique This Month</span>
         </div>
     </div>
     <div class="dash-stat-card fade-in">
@@ -42,7 +42,25 @@
         </div>
         <div class="dash-stat-info">
             <span class="dash-stat-number">{{ total_visitors }}</span>
-            <span class="dash-stat-label">All Time</span>
+            <span class="dash-stat-label">Unique All Time</span>
+        </div>
+    </div>
+    <div class="dash-stat-card fade-in">
+        <div class="dash-stat-icon" style="background:rgba(239,68,68,0.15);color:#EF4444">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        </div>
+        <div class="dash-stat-info">
+            <span class="dash-stat-number">{{ views_today }}</span>
+            <span class="dash-stat-label">Page Views Today</span>
+        </div>
+    </div>
+    <div class="dash-stat-card fade-in">
+        <div class="dash-stat-icon" style="background:rgba(168,85,247,0.15);color:#A855F7">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        </div>
+        <div class="dash-stat-info">
+            <span class="dash-stat-number">{{ total_views }}</span>
+            <span class="dash-stat-label">Total Page Views</span>
         </div>
     </div>
 </div>
@@ -54,16 +72,17 @@
     <div class="dash-table-wrap">
         <table class="dash-table">
             <thead>
-                <tr><th>Page</th><th>Visits</th></tr>
+                <tr><th>Page</th><th>Page Views</th><th>Unique Visitors</th></tr>
             </thead>
             <tbody>
                 {% for page in top_pages %}
                 <tr>
                     <td class="dash-table-title">{{ page.path }}</td>
-                    <td>{{ page.c }}</td>
+                    <td>{{ page.views }}</td>
+                    <td>{{ page.visitors }}</td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="2" class="dash-empty">No data yet.</td></tr>
+                <tr><td colspan="3" class="dash-empty">No data yet.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
