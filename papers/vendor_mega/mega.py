@@ -742,7 +742,7 @@ class Mega:
             shutil.move(temp_output_file.name, output_path)
             return output_path
 
-    def upload(self, filename, dest=None, dest_filename=None):
+    def upload(self, filename, dest=None, dest_filename=None, data=None):
         # determine storage node
         if dest is None:
             # if none set, upload to cloud drive node
@@ -751,24 +751,33 @@ class Mega:
             dest = self.root_id
 
         # request upload url, call 'u' method
-        with open(filename, 'rb') as input_file:
+        if data is not None:
+            file_size = len(data)
+            input_file = None
+        else:
             file_size = os.path.getsize(filename)
-            ul_url = self._api_request({'a': 'u', 's': file_size})['p']
+            input_file = None
+        ul_url = self._api_request({'a': 'u', 's': file_size})['p']
 
-            # generate random aes key (128) for file
-            ul_key = [random.randint(0, 0xFFFFFFFF) for _ in range(6)]
-            k_str = a32_to_str(ul_key[:4])
-            initial_ctr = ((ul_key[4] << 32) + ul_key[5]) << 64
-            aes = new_aes_ctr(k_str, initial_ctr)
+        # generate random aes key (128) for file
+        ul_key = [random.randint(0, 0xFFFFFFFF) for _ in range(6)]
+        k_str = a32_to_str(ul_key[:4])
+        initial_ctr = ((ul_key[4] << 32) + ul_key[5]) << 64
+        aes = new_aes_ctr(k_str, initial_ctr)
 
-            upload_progress = 0
-            completion_file_handle = None
+        upload_progress = 0
+        completion_file_handle = None
 
-            mac_str = b'\x00' * 16
-            mac_encryptor = new_aes_cbc(k_str, mac_str)
-            iv_str = a32_to_str([ul_key[4], ul_key[5], ul_key[4], ul_key[5]])
-            if file_size > 0:
-                for chunk_start, chunk_size in get_chunks(file_size):
+        mac_str = b'\x00' * 16
+        mac_encryptor = new_aes_cbc(k_str, mac_str)
+        iv_str = a32_to_str([ul_key[4], ul_key[5], ul_key[4], ul_key[5]])
+        if file_size > 0:
+            for chunk_start, chunk_size in get_chunks(file_size):
+                if data is not None:
+                    chunk = data[chunk_start:chunk_start + chunk_size]
+                else:
+                    if input_file is None:
+                        input_file = open(filename, 'rb')
                     chunk = input_file.read(chunk_size)
                     upload_progress += len(chunk)
 
@@ -802,6 +811,9 @@ class Mega:
                                             data='',
                                             timeout=self.timeout)
                 completion_file_handle = output_file.text
+
+            if input_file is not None:
+                input_file.close()
 
             logger.info('Chunks uploaded')
             logger.info('Setting attributes to complete upload')

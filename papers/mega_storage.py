@@ -40,16 +40,10 @@ class MEGAPDFStorage(Storage):
     def _save(self, name, content):
         m = self._connect()
         dest_node_id = self._get_or_create_folder(m)
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-            for chunk in content.chunks():
-                tmp.write(chunk)
-            tmp_path = tmp.name
-        try:
-            file_node = m.upload(tmp_path, dest=dest_node_id,
-                                 dest_filename=name)
-            link = m.get_link(file_node)
-        finally:
-            os.unlink(tmp_path)
+        data = content.read()
+        file_node = m.upload(None, dest=dest_node_id,
+                             dest_filename=name, data=data)
+        link = m.get_upload_link(file_node)
         return link
 
     def url(self, name):
