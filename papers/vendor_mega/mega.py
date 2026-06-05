@@ -5,9 +5,8 @@ import logging
 import secrets
 from pathlib import Path
 import hashlib
-from Crypto.Cipher import AES
-from Crypto.PublicKey import RSA
-from Crypto.Util import Counter
+from .crypto import (new_aes_ctr, new_aes_cbc, new_aes_ecb, a32_to_str,
+                     str_to_a32, makebyte)
 import os
 import random
 import binascii
@@ -141,11 +140,11 @@ class Mega:
                 first_factor_p,
                 second_factor_q,
             )
-            rsa_decrypter = RSA.construct(rsa_components)
+            rsa_n, rsa_e, rsa_d, rsa_p, rsa_q = rsa_components
 
             encrypted_sid = mpi_to_int(base64_url_decode(resp['csid']))
 
-            sid = '%x' % rsa_decrypter._decrypt(encrypted_sid)
+            sid = '%x' % pow(encrypted_sid, rsa_d, rsa_n)
             sid = binascii.unhexlify('0' + sid if len(sid) % 2 else sid)
             self.sid = base64_url_encode(sid[:43])
 
@@ -595,7 +594,7 @@ class Mega:
             except (RequestError, KeyError):
                 pass
 
-        master_key_cipher = AES.new(a32_to_str(self.master_key), AES.MODE_ECB)
+        master_key_cipher = new_aes_ecb(a32_to_str(self.master_key))
         ha = base64_url_encode(
             master_key_cipher.encrypt(node_data['h'].encode("utf8") +
                                       node_data['h'].encode("utf8")))
@@ -603,7 +602,7 @@ class Mega:
         share_key = secrets.token_bytes(16)
         ok = base64_url_encode(master_key_cipher.encrypt(share_key))
 
-        share_key_cipher = AES.new(share_key, AES.MODE_ECB)
+        share_key_cipher = new_aes_ecb(share_key)
         node_key = node_data['k']
         encrypted_node_key = base64_url_encode(
             share_key_cipher.encrypt(a32_to_str(node_key)))
@@ -703,13 +702,11 @@ class Mega:
                                          prefix='megapy_',
                                          delete=False) as temp_output_file:
             k_str = a32_to_str(k)
-            counter = Counter.new(128,
-                                  initial_value=((iv[0] << 32) + iv[1]) << 64)
-            aes = AES.new(k_str, AES.MODE_CTR, counter=counter)
+            initial_ctr = ((iv[0] << 32) + iv[1]) << 64
+            aes = new_aes_ctr(k_str, initial_ctr)
 
-            mac_str = '\0' * 16
-            mac_encryptor = AES.new(k_str, AES.MODE_CBC,
-                                    mac_str.encode("utf8"))
+            mac_str = b'\x00' * 16
+            mac_encryptor = new_aes_cbc(k_str, mac_str)
             iv_str = a32_to_str([iv[0], iv[1], iv[0], iv[1]])
 
             for chunk_start, chunk_size in get_chunks(file_size):
@@ -717,7 +714,7 @@ class Mega:
                 chunk = aes.decrypt(chunk)
                 temp_output_file.write(chunk)
 
-                encryptor = AES.new(k_str, AES.MODE_CBC, iv_str)
+                encryptor = new_aes_cbc(k_str, iv_str)
                 for i in range(0, len(chunk) - 16, 16):
                     block = chunk[i:i + 16]
                     encryptor.encrypt(block)
@@ -761,23 +758,21 @@ class Mega:
             # generate random aes key (128) for file
             ul_key = [random.randint(0, 0xFFFFFFFF) for _ in range(6)]
             k_str = a32_to_str(ul_key[:4])
-            count = Counter.new(
-                128, initial_value=((ul_key[4] << 32) + ul_key[5]) << 64)
-            aes = AES.new(k_str, AES.MODE_CTR, counter=count)
+            initial_ctr = ((ul_key[4] << 32) + ul_key[5]) << 64
+            aes = new_aes_ctr(k_str, initial_ctr)
 
             upload_progress = 0
             completion_file_handle = None
 
-            mac_str = '\0' * 16
-            mac_encryptor = AES.new(k_str, AES.MODE_CBC,
-                                    mac_str.encode("utf8"))
+            mac_str = b'\x00' * 16
+            mac_encryptor = new_aes_cbc(k_str, mac_str)
             iv_str = a32_to_str([ul_key[4], ul_key[5], ul_key[4], ul_key[5]])
             if file_size > 0:
                 for chunk_start, chunk_size in get_chunks(file_size):
                     chunk = input_file.read(chunk_size)
                     upload_progress += len(chunk)
 
-                    encryptor = AES.new(k_str, AES.MODE_CBC, iv_str)
+                    encryptor = new_aes_cbc(k_str, iv_str)
                     for i in range(0, len(chunk) - 16, 16):
                         block = chunk[i:i + 16]
                         encryptor.encrypt(block)

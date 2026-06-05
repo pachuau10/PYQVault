@@ -1,4 +1,4 @@
-from Crypto.Cipher import AES
+import pyaes
 import json
 import base64
 import struct
@@ -6,32 +6,36 @@ import binascii
 import random
 import sys
 
-# Python3 compatibility
 if sys.version_info < (3, ):
-
     def makebyte(x):
         return x
-
     def makestring(x):
         return x
 else:
     import codecs
-
     def makebyte(x):
         return codecs.latin_1_encode(x)[0]
-
     def makestring(x):
         return codecs.latin_1_decode(x)[0]
 
 
 def aes_cbc_encrypt(data, key):
-    aes_cipher = AES.new(key, AES.MODE_CBC, makebyte('\0' * 16))
-    return aes_cipher.encrypt(data)
+    iv = b'\x00' * 16
+    cipher = pyaes.AESModeOfOperationCBC(key, iv)
+    return cipher.encrypt(data)
 
 
 def aes_cbc_decrypt(data, key):
-    aes_cipher = AES.new(key, AES.MODE_CBC, makebyte('\0' * 16))
-    return aes_cipher.decrypt(data)
+    iv = b'\x00' * 16
+    aes = pyaes.AES(key)
+    plaintext = b''
+    prev = iv
+    for i in range(0, len(data), 16):
+        block = data[i:i+16]
+        decrypted = aes.decrypt(block)
+        plaintext += bytes(a ^ b for a, b in zip(decrypted, prev))
+        prev = block
+    return plaintext
 
 
 def aes_cbc_encrypt_a32(data, key):
@@ -40,6 +44,40 @@ def aes_cbc_encrypt_a32(data, key):
 
 def aes_cbc_decrypt_a32(data, key):
     return str_to_a32(aes_cbc_decrypt(a32_to_str(data), a32_to_str(key)))
+
+
+class Counter128:
+    def __init__(self, initial_value=0):
+        self._counter = initial_value.to_bytes(16, 'big')
+    def __call__(self):
+        result = self._counter
+        val = int.from_bytes(self._counter, 'big') + 1
+        if val >= 2**128:
+            val = 0
+        self._counter = val.to_bytes(16, 'big')
+        return result
+
+
+def new_aes_ctr(key, initial_counter):
+    counter = Counter128(initial_counter)
+    return pyaes.AESModeOfOperationCTR(key, counter=counter)
+
+
+def new_aes_cbc(key, iv):
+    return pyaes.AESModeOfOperationCBC(key, iv)
+
+
+class ECB:
+    def __init__(self, key):
+        self._ecb = pyaes.AESModeOfOperationECB(key)
+    def encrypt(self, data):
+        result = b''
+        for i in range(0, len(data), 16):
+            result += self._ecb.encrypt(data[i:i+16])
+        return result
+
+def new_aes_ecb(key):
+    return ECB(key)
 
 
 def stringhash(str, aeskey):
@@ -96,17 +134,11 @@ def str_to_a32(b):
     if isinstance(b, str):
         b = makebyte(b)
     if len(b) % 4:
-        # pad to multiple of 4
         b += b'\0' * (4 - len(b) % 4)
     return struct.unpack('>%dI' % (len(b) / 4), b)
 
 
 def mpi_to_int(s):
-    """
-    A Multi-precision integer is encoded as a series of bytes in big-endian
-    order. The first two bytes are a header which tell the number of bits in
-    the integer. The rest of the bytes are the integer.
-    """
     return int(binascii.hexlify(s[2:]), 16)
 
 

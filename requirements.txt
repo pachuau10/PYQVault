@@ -5,5 +5,4 @@ python-dotenv>=1.0
 tenacity>=9.0.0
 requests>=2.31
 whitenoise>=6.0
-pycryptodome>=3.21.0
-whitenoise>=6.0
+pyaes>=1.6
