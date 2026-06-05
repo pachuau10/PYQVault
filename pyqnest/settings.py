@@ -89,16 +89,21 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
-# MEGA.nz credentials for PDF storage
-MEGA_EMAIL = os.environ.get('MEGA_EMAIL', '')
-MEGA_PASSWORD = os.environ.get('MEGA_PASSWORD', '')
-MEGA_FOLDER = os.environ.get('MEGA_FOLDER', 'PYQNest_PDFs')
+# Backblaze B2 (S3-compatible) credentials for PDF storage
+AWS_ACCESS_KEY_ID = os.environ.get('B2_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = os.environ.get('B2_APPLICATION_KEY', '')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('B2_BUCKET', '')
+AWS_S3_ENDPOINT_URL = os.environ.get('B2_ENDPOINT', '')
+AWS_S3_REGION_NAME = os.environ.get('B2_REGION', 'us-west-004')
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+AWS_QUERYSTRING_AUTH = False
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STORAGES = {
     "default": {
-        "BACKEND": "papers.mega_storage.MEGAPDFStorage",
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
