@@ -1,4 +1,3 @@
-import io
 import re
 from django.core.files.storage import Storage
 from django.core.files.base import ContentFile
@@ -15,6 +14,10 @@ class MEGAPDFStorage(Storage):
 
     def _connect(self):
         if self._mega is None:
+            if not settings.MEGA_EMAIL or not settings.MEGA_PASSWORD:
+                raise ValueError(
+                    "MEGA_EMAIL and MEGA_PASSWORD must be set in environment variables"
+                )
             mega = Mega()
             self._mega = mega.login(
                 settings.MEGA_EMAIL, settings.MEGA_PASSWORD
@@ -55,13 +58,22 @@ class MEGAPDFStorage(Storage):
         raise FileNotFoundError(f"File not found on MEGA: {name}")
 
     def delete(self, name):
-        m = self._connect()
-        match = MEGA_LINK_RE.match(name)
-        if match:
-            file_id = match.group(1)
-            node = m.find(file_id)
-            if node:
-                m.delete(node)
+        pass
 
     def exists(self, name):
-        return True
+        return bool(name)
+
+    def size(self, name):
+        return 0
+
+    def get_accessed_time(self, name):
+        return None
+
+    def get_created_time(self, name):
+        return None
+
+    def get_modified_time(self, name):
+        return None
+
+    def path(self, name):
+        raise NotImplementedError("MEGA storage does not support local paths")
