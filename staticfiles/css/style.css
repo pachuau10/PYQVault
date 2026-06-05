@@ -479,12 +479,12 @@ img { max-width: 100%; }
 /* ====== HERO ====== */
 .hero {
     position: relative;
-    padding: 20px 0 40px;
+    padding: 24px 0 40px;
     text-align: center;
     overflow: hidden;
-    min-height: calc(100vh - var(--nav-height));
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .hero-particles {
@@ -561,16 +561,16 @@ img { max-width: 100%; }
 }
 .hero-search {
     display: flex;
-    flex-direction: column;
-    gap: 0;
+    gap: 8px;
     position: relative;
+    flex-wrap: wrap;
 }
 .hero-search .search-input {
     background: var(--bg-elevated);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     height: 56px;
-    padding: 0 16px 0 48px;
+    padding: 0 48px;
     font-size: 1rem;
     font-family: var(--font);
     outline: none;
@@ -578,6 +578,8 @@ img { max-width: 100%; }
     color: var(--text);
     transition: var(--transition);
     box-shadow: var(--shadow-sm);
+    flex: 1;
+    min-width: 0;
 }
 .hero-search .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
 .hero-search .search-input::placeholder { color: var(--text-muted); }
@@ -588,16 +590,14 @@ img { max-width: 100%; }
     transform: translateY(-50%);
     color: var(--text-muted);
     pointer-events: none;
+    z-index: 1;
 }
 .hero-search .btn {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
     min-height: 44px;
     padding: 0 20px;
+    flex-shrink: 0;
 }
-.hero-search .btn:hover { transform: translateY(-50%) scale(1.02); }
+.hero-search .btn:hover { transform: scale(1.02); }
 
 .search-suggestions {
     display: none;
@@ -686,8 +686,11 @@ img { max-width: 100%; }
 /* ====== EXAM CARDS ====== */
 .exam-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 12px;
+}
+@media (min-width: 480px) {
+    .exam-grid { grid-template-columns: 1fr 1fr; }
 }
 
 .exam-card {
@@ -1407,8 +1410,9 @@ img { max-width: 100%; }
     .nav-container { padding: 0 20px; gap: 16px; }
     .nav-logo { margin-right: 0; }
 
-    .hero-search .search-input { padding: 0 16px 0 48px; }
+    .hero-search .search-input { padding: 0 48px; }
     .hero-search .btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); }
+    .hero-search { flex-wrap: nowrap; }
     .hero-stats { gap: 48px; }
     .hero-stat-number { font-size: 1.75rem; }
 }
@@ -1698,7 +1702,6 @@ img { max-width: 100%; }
     font-size: 0.8125rem;
     color: var(--text-muted);
     margin-bottom: 20px;
-}
 }
 
 /* ====== COMING SOON ====== */
