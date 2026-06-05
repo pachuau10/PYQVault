@@ -46,6 +46,9 @@
                 <div class="info-row"><span class="info-label">Subject</span><span class="info-value">{{ paper.subject }}</span></div>
                 <div class="info-row"><span class="info-label">Year</span><span class="info-value">{{ paper.year }}</span></div>
                 <div class="info-row"><span class="info-label">Language</span><span class="info-value">{{ paper.get_language_display }}</span></div>
+                {% if paper.description %}
+                <div class="info-row description-row"><span class="info-label">Description</span><span class="info-value">{{ paper.description }}</span></div>
+                {% endif %}
             </div>
 
             <div class="paper-detail-actions">
