@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.db.models import Q, F
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.mail import send_mail
 from .models import Exam, Paper, AISummary, ContactMessage
