@@ -55,15 +55,15 @@ class Paper(models.Model):
 
     @property
     def pdf_download_url(self):
+        if self.pdf_url:
+            parsed = urlparse(self.pdf_url)
+            if parsed.netloc and parsed.netloc not in ("example.com", "www.example.com"):
+                return self.pdf_url
         if self.pdf_file:
             try:
                 return self.pdf_file.url
             except Exception:
                 pass
-        if self.pdf_url:
-            parsed = urlparse(self.pdf_url)
-            if parsed.netloc and parsed.netloc not in ("example.com", "www.example.com"):
-                return self.pdf_url
         return None
 
     @property
@@ -71,7 +71,7 @@ class Paper(models.Model):
         return self.pdf_download_url
 
     @property
-    def pdf_download_cloudinary_url(self):
+    def pdf_download_attachment_url(self):
         return self.pdf_download_url
 
     def __str__(self):
