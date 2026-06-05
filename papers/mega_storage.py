@@ -1,8 +1,10 @@
 import re
+import os
+import tempfile
 from django.core.files.storage import Storage
 from django.core.files.base import ContentFile
 from django.conf import settings
-from mega import Mega
+from papers.vendor_mega import Mega
 
 
 MEGA_LINK_RE = re.compile(r"https://mega\.nz/file/([^#]+)#(.+)")
@@ -28,18 +30,26 @@ class MEGAPDFStorage(Storage):
         folder_name = getattr(settings, "MEGA_FOLDER", "PYQNest_PDFs")
         try:
             folder = m.find(folder_name)
-            if not folder:
-                folder = m.create_folder(folder_name)
+            if folder:
+                return folder[0]
         except Exception:
-            folder = m.create_folder(folder_name)
-        return folder
+            pass
+        result = m.create_folder(folder_name)
+        return result.get(folder_name)
 
     def _save(self, name, content):
         m = self._connect()
-        folder = self._get_or_create_folder(m)
-        content_bytes = content.read()
-        file_node = m.upload((name, content_bytes), dest=folder[0])
-        link = m.get_link(file_node)
+        dest_node_id = self._get_or_create_folder(m)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+            for chunk in content.chunks():
+                tmp.write(chunk)
+            tmp_path = tmp.name
+        try:
+            file_node = m.upload(tmp_path, dest=dest_node_id,
+                                 dest_filename=name)
+            link = m.get_link(file_node)
+        finally:
+            os.unlink(tmp_path)
         return link
 
     def url(self, name):
@@ -50,12 +60,12 @@ class MEGAPDFStorage(Storage):
         match = MEGA_LINK_RE.match(name)
         if not match:
             raise FileNotFoundError(f"Invalid MEGA link: {name}")
-        file_id, key = match.group(1), match.group(2)
-        node = m.find(file_id)
-        if node:
-            data = m.download(node)
-            return ContentFile(data)
-        raise FileNotFoundError(f"File not found on MEGA: {name}")
+        with tempfile.TemporaryDirectory() as td:
+            tmp_path = os.path.join(td, "download.pdf")
+            out = m.download_url(name, dest_path=td, dest_filename="download.pdf")
+            with open(out, "rb") as f:
+                data = f.read()
+        return ContentFile(data)
 
     def delete(self, name):
         pass
