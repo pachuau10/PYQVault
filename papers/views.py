@@ -1,6 +1,7 @@
 import json
 from datetime import date
-from django.shortcuts import render, get_object_or_404
+from urllib.parse import urlparse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.db.models import Q, F
 from django.utils import timezone
@@ -183,3 +184,27 @@ def contact(request):
             return JsonResponse({"success": True})
         return JsonResponse({"success": False, "error": "All fields are required."}, status=400)
     return render(request, "contact.html")
+
+
+def paper_download(request, slug):
+    paper = get_object_or_404(Paper, slug=slug)
+
+    if paper.pdf_url:
+        parsed = urlparse(paper.pdf_url)
+        if parsed.netloc and parsed.netloc not in ("example.com", "www.example.com"):
+            return redirect(paper.pdf_url)
+
+    if paper.pdf_file and paper.pdf_file.name:
+        name = paper.pdf_file.name
+        if '://' in name:
+            return redirect(name)
+        try:
+            storage = paper.pdf_file.field.storage
+            url = storage.url(name, parameters={
+                'ResponseContentDisposition': f'attachment; filename="{paper.title}.pdf"'
+            })
+            return redirect(url)
+        except Exception:
+            pass
+
+    return redirect('paper_detail', slug=slug)

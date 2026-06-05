@@ -59,7 +59,7 @@
                         <span class="meta-tag">{{ paper.year }}</span>
                     </div>
                     <div class="paper-actions">
-                        <a href="{{ paper.pdf_download_attachment_url }}" class="btn btn-sm btn-primary" download>Download</a>
+                        <a href="{% url 'paper_download' paper.slug %}" class="btn btn-sm btn-primary">Download</a>
                     </div>
                 </div>
                 {% empty %}
