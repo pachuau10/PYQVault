@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us - PYQVault{% endblock %}
+{% block meta_desc %}Get in touch with PYQVault. Send us your feedback, suggestions, or report issues.{% endblock %}
+
+{% block content %}
+<section class="contact-hero">
+    <div class="contact-hero-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="container">
+        <div class="contact-hero-content">
+            <span class="about-badge">Get in Touch</span>
+            <h1 class="about-hero-title">Contact <span class="gradient-text">Us</span></h1>
+            <p class="about-hero-subtitle">We would love to hear your feedback, suggestions, or report any issues.</p>
+        </div>
+    </div>
+</section>
+
+<section class="contact-section">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info-card fade-in">
+                <div class="contact-info-header">
+                    <div class="contact-info-icon">📧</div>
+                    <h3>Email Us</h3>
+                </div>
+                <a href="mailto:support@chhohreivung.com" class="contact-email">support@chhohreivung.com</a>
+                <p class="contact-note">For copyright concerns, broken PDFs, corrections, feature requests, or general inquiries, please send us an email.</p>
+            </div>
+            <div class="contact-form-card fade-in">
+                <form class="contact-form" id="contactForm" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" class="form-input" placeholder="What is this about?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" class="form-input form-textarea" placeholder="Tell us more..." rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="toast" id="successToast">
+    <div class="toast-content">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#22C55E;flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Thank you! Your message has been received.</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var form = this, btn = form.querySelector('.btn-submit');
+    btn.disabled = true; btn.textContent = 'Sending...';
+    var formData = new FormData(form);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '{% url "contact" %}', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.onload = function() {
+        btn.disabled = false; btn.textContent = 'Send Message';
+        if (xhr.status === 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                if (data.success) {
+                    form.reset();
+                    var toast = document.getElementById('successToast');
+                    toast.classList.add('show');
+                    setTimeout(function() { toast.classList.remove('show'); }, 4000);
+                    return;
+                }
+            } catch(e) {}
+        }
+        alert('Something went wrong. Please try again.');
+    };
+    xhr.onerror = function() {
+        btn.disabled = false; btn.textContent = 'Send Message';
+        alert('Something went wrong. Please try again.');
+    };
+    xhr.send(formData);
+});
+</script>
+{% endblock %}

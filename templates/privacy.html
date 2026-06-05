@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Privacy Policy - PYQVault{% endblock %}
+{% block meta_desc %}Privacy Policy for PYQVault - how we collect, use, and protect your data.{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Privacy Policy</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="legal-content">
+            <div class="legal-card">
+                <p class="legal-date">Last updated: June 2026</p>
+
+                <h2>1. Information We Collect</h2>
+                <p>We collect minimal information necessary to provide our services:</p>
+                <ul>
+                    <li><strong>Contact form submissions:</strong> Name, email address, and message content when you contact us.</li>
+                    <li><strong>Usage data:</strong> Anonymous analytics about which papers and features are accessed.</li>
+                    <li><strong>Session data:</strong> Temporary session information to remember your preferences (e.g., dark mode toggle).</li>
+                </ul>
+
+                <h2>2. How We Use Your Information</h2>
+                <p>Your information is used only to:</p>
+                <ul>
+                    <li>Respond to your inquiries and support requests</li>
+                    <li>Improve our platform and user experience</li>
+                    <li>Maintain the security and functionality of our service</li>
+                </ul>
+
+                <h2>3. Data Sharing</h2>
+                <p>We do not sell, trade, or share your personal information with third parties. We use trusted third-party services for hosting and infrastructure:</p>
+                <ul>
+                    <li><strong>NeonDB</strong> — PostgreSQL database hosting</li>
+                    <li><strong>Cloudinary</strong> — File storage for PDFs and media</li>
+                    <li><strong>Google (Gmail)</strong> — Email communication</li>
+                </ul>
+
+                <h2>4. Cookies</h2>
+                <p>We use minimal cookies only for essential functionality:</p>
+                <ul>
+                    <li>Session cookie — to maintain your session</li>
+                    <li>CSRF cookie — for form security</li>
+                    <li>Theme preference cookie — to remember your dark/light mode choice</li>
+                </ul>
+                <p>We do not use tracking cookies or third-party advertising cookies.</p>
+
+                <h2>5. Data Security</h2>
+                <p>We implement reasonable security measures including HTTPS encryption, secure database connections, and environment-based secrets management to protect your data.</p>
+
+                <h2>6. Your Rights</h2>
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Request access to any personal data we hold about you</li>
+                    <li>Request deletion of your data</li>
+                    <li>Opt out of any non-essential data collection</li>
+                </ul>
+                <p>To exercise these rights, <a href="{% url 'contact' %}">contact us</a>.</p>
+
+                <h2>7. Contact</h2>
+                <p>If you have any questions about this Privacy Policy, please <a href="{% url 'contact' %}">contact us</a>.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

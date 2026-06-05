@@ -1,0 +1,33 @@
+<div class="ai-summary-card" id="ai-summary">
+    <div class="ai-summary-header">
+        <span class="ai-badge">AI Summary</span>
+    </div>
+    <div class="ai-summary-body">
+        <div class="summary-section">
+            <h3>Overview</h3>
+            <p>{{ summary.overview }}</p>
+        </div>
+        <div class="summary-section">
+            <h3>Important Topics</h3>
+            <div class="topic-badges">
+                {% for topic in summary.topics.all %}
+                <span class="topic-badge">{{ topic.name }}</span>
+                {% empty %}
+                <span class="text-muted">No topics specified.</span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="summary-meta">
+            <div class="summary-item">
+                <span class="summary-label">Difficulty</span>
+                <span class="difficulty-badge difficulty-{{ summary.difficulty }}">{{ summary.get_difficulty_display }}</span>
+            </div>
+        </div>
+        {% if summary.best_for %}
+        <div class="summary-section">
+            <h3>Best For</h3>
+            <p>{{ summary.best_for }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>

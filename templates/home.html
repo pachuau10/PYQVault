@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PYQVault - Find Previous Year Question Papers Instantly{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="container hero-content">
+        <h1 class="hero-title">Find Previous Year <span class="gradient-text">Question Papers</span> Instantly.</h1>
+        <p class="hero-subtitle">Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams, and more. Read online and download PDFs instantly.</p>
+        <div class="hero-search-wrapper">
+            <form class="hero-search" action="{% url 'search' %}" method="GET">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" name="q" class="search-input" placeholder="Search JEE 2025 Physics..." autocomplete="off" id="heroSearchInput">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <div class="search-suggestions" id="heroSuggestions"></div>
+        </div>
+        <div class="exam-chips">
+            {% for exam in exams %}
+            <a href="{% url 'search' %}?exam={{ exam.slug }}" class="exam-chip">{{ exam.name }}</a>
+            {% endfor %}
+            <a href="{% url 'exams' %}" class="exam-chip">All Exams →</a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-number">{{ total_papers }}+</div>
+                <div class="hero-stat-label">Papers</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number">{{ total_exams }}+</div>
+                <div class="hero-stat-label">Exams</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number">AI</div>
+                <div class="hero-stat-label">Summaries</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Popular Exams</h2>
+            <a href="{% url 'exams' %}" class="section-link">View All →</a>
+        </div>
+        <div class="exam-grid">
+            {% for exam in exams %}
+            <a href="{% url 'exam_detail' exam.slug %}" class="exam-card">
+                <div class="exam-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <h3 class="exam-name">{{ exam.name }}</h3>
+                <p class="exam-count">{{ exam.paper_count }} papers</p>
+            </a>
+            {% empty %}
+            <p class="empty-state">No exams available yet. Check back soon!</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Latest Uploads</h2>
+            <a href="{% url 'latest' %}" class="section-link">View All →</a>
+        </div>
+        <div class="paper-grid" id="latestPapersGrid">
+            {% for paper in latest_papers %}
+            <div class="paper-card">
+                <div class="paper-thumb">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </div>
+                <h3 class="paper-title">{{ paper.title }}</h3>
+                <div class="paper-meta">
+                    <span class="meta-tag">{{ paper.exam.name }}</span>
+                    <span class="meta-tag">{{ paper.subject }}</span>
+                    <span class="meta-tag">{{ paper.year }}</span>
+                </div>
+                <div class="paper-actions">
+                    <a href="{% url 'paper_detail' paper.slug %}" class="btn btn-sm btn-primary">View</a>
+                    <a href="{% url 'paper_detail' paper.slug %}#ai-summary" class="btn btn-sm btn-secondary">AI</a>
+                </div>
+            </div>
+            {% empty %}
+            <p class="empty-state">No papers uploaded yet. Check back soon!</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Study Tools</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr;gap:16px">
+            <div class="glass-card coming-soon-card-sm">
+                <div class="coming-soon-icon-sm">🧠</div>
+                <div>
+                    <div style="font-weight:600;margin-bottom:4px">AI Summary</div>
+                    <div style="font-size:0.8125rem;color:var(--text-muted)">AI features are currently under development</div>
+                </div>
+                <span class="coming-soon-badge-sm">Coming Soon</span>
+            </div>
+            <div class="glass-card coming-soon-card-sm">
+                <div class="coming-soon-icon-sm">📝</div>
+                <div>
+                    <div style="font-weight:600;margin-bottom:4px">Generate MCQs</div>
+                    <div style="font-size:0.8125rem;color:var(--text-muted)">AI features are currently under development</div>
+                </div>
+                <span class="coming-soon-badge-sm">Coming Soon</span>
+            </div>
+            <div class="glass-card coming-soon-card-sm">
+                <div class="coming-soon-icon-sm">❓</div>
+                <div>
+                    <div style="font-weight:600;margin-bottom:4px">Question Extraction</div>
+                    <div style="font-size:0.8125rem;color:var(--text-muted)">AI features are currently under development</div>
+                </div>
+                <span class="coming-soon-badge-sm">Coming Soon</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('heroSearchInput')?.addEventListener('input', function() {
+    var q = this.value.trim();
+    var list = document.getElementById('heroSuggestions');
+    if (q.length < 2) { list.classList.remove('active'); list.innerHTML = ''; return; }
+    fetch('/search/suggest/?q=' + encodeURIComponent(q))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            list.innerHTML = '';
+            if (data.length === 0) { list.classList.remove('active'); return; }
+            data.forEach(function(item) {
+                var div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>' + item.label + '</span>';
+                div.addEventListener('click', function() { window.location.href = item.url; });
+                list.appendChild(div);
+            });
+            list.classList.add('active');
+        });
+});
+document.addEventListener('click', function(e) {
+    var wrapper = document.querySelector('.hero-search-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById('heroSuggestions')?.classList.remove('active');
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Latest Papers - PYQVault{% endblock %}
+{% block meta_desc %}Browse the latest previous year question papers uploaded to PYQVault. Stay updated with new PYQ uploads.{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Latest Uploads</h1>
+        <p>Recently added previous year question papers.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="paper-grid">
+            {% for paper in papers %}
+            <div class="paper-card">
+                <h3 class="paper-title">{{ paper.title }}</h3>
+                <div class="paper-meta">
+                    <span class="meta-tag">{{ paper.exam.name }}</span>
+                    <span class="meta-tag">{{ paper.subject }}</span>
+                    <span class="meta-tag">{{ paper.year }}</span>
+                </div>
+                <div class="paper-actions">
+                    <a href="{% url 'paper_detail' paper.slug %}" class="btn btn-sm btn-primary">View PDF</a>
+                    <a href="{% url 'paper_detail' paper.slug %}#ai-summary" class="btn btn-sm btn-outline">AI Summary</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <p>No papers uploaded yet. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

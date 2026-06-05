@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ paper.title }} - PYQVault{% endblock %}
+{% block meta_desc %}{{ paper.title }}. {% if paper.description %}{{ paper.description }}{% else %}Download {{ paper.exam.name }} {{ paper.subject }} question paper PDF.{% endif %}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="paper-detail">
+            <h1 class="paper-detail-title">{{ paper.title }} Question Paper PDF</h1>
+
+            <div class="info-card">
+                <div class="info-row"><span class="info-label">Exam</span><span class="info-value">{{ paper.exam.name }}</span></div>
+                <div class="info-row"><span class="info-label">Subject</span><span class="info-value">{{ paper.subject }}</span></div>
+                <div class="info-row"><span class="info-label">Year</span><span class="info-value">{{ paper.year }}</span></div>
+                <div class="info-row"><span class="info-label">Language</span><span class="info-value">{{ paper.get_language_display }}</span></div>
+            </div>
+
+            <div class="paper-detail-actions">
+                {% if paper.pdf_download_url %}
+                <a href="{{ paper.pdf_download_url }}" target="_blank" class="btn btn-primary" rel="noopener">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View PDF
+                </a>
+                <a href="{{ paper.pdf_download_url }}" download class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download PDF
+                </a>
+                {% else %}
+                <p class="text-muted" style="font-size:1rem;padding:12px 0;">Sorry, this PDF is currently unavailable.</p>
+                {% endif %}
+            </div>
+
+            <div class="coming-soon-card">
+                <div class="coming-soon-icon">🧠</div>
+                <h2 class="coming-soon-title">AI Study Tools</h2>
+                <p class="coming-soon-text">AI-powered summaries, MCQs, and question extraction are currently under development.</p>
+                <span class="coming-soon-badge">Coming Soon</span>
+            </div>
+
+            {% if related_papers %}
+            <div class="related-section">
+                <h2 class="section-title">Related Papers</h2>
+                <div class="paper-grid">
+                    {% for related in related_papers %}
+                    <div class="paper-card">
+                        <div class="paper-thumb">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0-2 2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <h3 class="paper-title">{{ related.title }}</h3>
+                        <div class="paper-meta">
+                            <span class="meta-tag">{{ related.subject }}</span>
+                            <span class="meta-tag">{{ related.year }}</span>
+                        </div>
+                        <div class="paper-actions">
+                            <a href="{% url 'paper_detail' related.slug %}" class="btn btn-sm btn-primary">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exam.name }} Previous Year Question Papers - PYQVault{% endblock %}
+{% block meta_desc %}Download {{ exam.name }} previous year question papers PDF. Access subject-wise PYQs for {{ exam.name }} with AI-powered summaries.{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>{{ exam.name }}</h1>
+        <p>Browse previous year question papers for {{ exam.name }}.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if years %}
+        <div class="filter-bar">
+            <span class="filter-label">Filter by Year:</span>
+            <div class="filter-options">
+                <a href="{% url 'exam_detail' exam.slug %}" class="filter-chip {% if not selected_year %}active{% endif %}">All</a>
+                {% for y in years %}
+                <a href="{% url 'exam_detail_year' exam.slug y %}" class="filter-chip {% if selected_year == y %}active{% endif %}">{{ y }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="paper-grid">
+            {% for paper in papers %}
+            <div class="paper-card">
+                <h3 class="paper-title">{{ paper.title }}</h3>
+                <div class="paper-meta">
+                    <span class="meta-tag">{{ paper.subject }}</span>
+                    <span class="meta-tag">{{ paper.year }}</span>
+                    {% if paper.language %}<span class="meta-tag">{{ paper.get_language_display }}</span>{% endif %}
+                </div>
+                <div class="paper-actions">
+                    <a href="{% url 'paper_detail' paper.slug %}" class="btn btn-sm btn-primary">View PDF</a>
+                    <a href="{% url 'paper_detail' paper.slug %}#ai-summary" class="btn btn-sm btn-outline">AI Summary</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <p>No papers found for this{% if selected_year %} year{% endif %}.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

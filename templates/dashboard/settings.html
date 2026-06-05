@@ -1,0 +1,67 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Settings - Dashboard{% endblock %}
+
+{% block content %}
+<div class="dash-page-header">
+    <h1 class="dash-page-title">Settings</h1>
+</div>
+
+<div class="dash-card fade-in">
+    <div class="dash-card-header">
+        <h2 class="dash-card-title">Site Settings</h2>
+    </div>
+    <p class="dash-text-muted" style="padding:0 0 16px;line-height:1.7">Configure your site branding, SEO, and social links. These settings are managed via the Django admin interface.</p>
+    <div class="dash-settings-links">
+        <a href="/admin/" target="_blank" class="dash-setting-link">
+            <span class="dash-setting-link-icon">⚙️</span>
+            <span>Django Admin Panel</span>
+            <span class="dash-setting-link-arrow">→</span>
+        </a>
+        <a href="/admin/papers/exam/" target="_blank" class="dash-setting-link">
+            <span class="dash-setting-link-icon">📚</span>
+            <span>Manage Exams &amp; Categories</span>
+            <span class="dash-setting-link-arrow">→</span>
+        </a>
+        <a href="/admin/papers/paper/" target="_blank" class="dash-setting-link">
+            <span class="dash-setting-link-icon">📄</span>
+            <span>Manage PDFs</span>
+            <span class="dash-setting-link-arrow">→</span>
+        </a>
+        <a href="/admin/papers/contactmessage/" target="_blank" class="dash-setting-link">
+            <span class="dash-setting-link-icon">✉️</span>
+            <span>View Contact Messages</span>
+            <span class="dash-setting-link-arrow">→</span>
+        </a>
+        <a href="/admin/auth/user/" target="_blank" class="dash-setting-link">
+            <span class="dash-setting-link-icon">👤</span>
+            <span>Manage Users</span>
+            <span class="dash-setting-link-arrow">→</span>
+        </a>
+    </div>
+</div>
+
+<div class="dash-card fade-in">
+    <div class="dash-card-header">
+        <h2 class="dash-card-title">Quick Links</h2>
+    </div>
+    <div class="dash-settings-links">
+        <a href="{% url 'home' %}" class="dash-setting-link">
+            <span class="dash-setting-link-icon">🏠</span>
+            <span>View Public Site</span>
+            <span class="dash-setting-link-arrow">→</span>
+        </a>
+        <a href="{% url 'about' %}" class="dash-setting-link">
+            <span class="dash-setting-link-icon">ℹ️</span>
+            <span>About Page</span>
+            <span class="dash-setting-link-arrow">→</span>
+        </a>
+        <a href="{% url 'contact' %}" class="dash-setting-link">
+            <span class="dash-setting-link-icon">✉️</span>
+            <span>Contact Page</span>
+            <span class="dash-setting-link-arrow">→</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Contact Messages - Dashboard{% endblock %}
+
+{% block content %}
+<div class="dash-page-header">
+    <h1 class="dash-page-title">Contact Messages</h1>
+</div>
+
+<div class="dash-card fade-in">
+    <div class="dash-card-header">
+        <h2 class="dash-card-title">All Messages</h2>
+        <span class="dash-text-muted">{{ messages.count }} total</span>
+    </div>
+    <div class="dash-table-wrap">
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for msg in messages %}
+                <tr>
+                    <td class="dash-table-title">{{ msg.name }}</td>
+                    <td><a href="mailto:{{ msg.email }}" class="dash-link">{{ msg.email }}</a></td>
+                    <td>{{ msg.subject|truncatechars:35 }}</td>
+                    <td class="dash-text-muted">{{ msg.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="dash-action-btns">
+                            <button class="dash-btn-icon dash-view-msg" data-id="{{ msg.id }}" data-name="{{ msg.name }}" data-email="{{ msg.email }}" data-subject="{{ msg.subject }}" data-message="{{ msg.message }}" title="Read">👁</button>
+                            <button class="dash-btn-icon dash-delete-msg" data-id="{{ msg.id }}" title="Delete" style="color:#EF4444">🗑</button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="dash-empty">No messages yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="dash-modal" id="msgModal">
+    <div class="dash-modal-overlay" id="msgModalOverlay"></div>
+    <div class="dash-modal-content">
+        <div class="dash-modal-header">
+            <h3 id="msgModalSubject"></h3>
+            <button class="dash-modal-close" id="msgModalClose">&times;</button>
+        </div>
+        <div class="dash-modal-body">
+            <p class="dash-text-muted" style="margin-bottom:4px">From: <strong id="msgModalName"></strong> (<span id="msgModalEmail"></span>)</p>
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--dash-border);line-height:1.8" id="msgModalText"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.dash-view-msg').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        document.getElementById('msgModalSubject').textContent = this.dataset.subject;
+        document.getElementById('msgModalName').textContent = this.dataset.name;
+        document.getElementById('msgModalEmail').textContent = this.dataset.email;
+        document.getElementById('msgModalText').textContent = this.dataset.message;
+        document.getElementById('msgModal').classList.add('open');
+    });
+});
+document.getElementById('msgModalClose')?.addEventListener('click', function() {
+    document.getElementById('msgModal').classList.remove('open');
+});
+document.getElementById('msgModalOverlay')?.addEventListener('click', function() {
+    document.getElementById('msgModal').classList.remove('open');
+});
+
+document.querySelectorAll('.dash-delete-msg').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        if (!confirm('Delete this message?')) return;
+        var id = this.dataset.id;
+        var row = this.closest('tr');
+        fetch('/dashboard/messages/' + id + '/delete/', {
+            method: 'POST',
+            headers: {'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.success) {
+                row.remove();
+                var toast = document.getElementById('dashToast');
+                document.getElementById('dashToastMsg').textContent = 'Message deleted.';
+                toast.classList.add('show');
+                setTimeout(function() { toast.classList.remove('show'); }, 3000);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

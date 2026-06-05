@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Chhohreivung - PYQVault{% endblock %}
+{% block meta_desc %}Learn about PYQVault - the platform for accessing previous year question papers with AI-powered summaries.{% endblock %}
+
+{% block content %}
+<section class="about-hero">
+    <div class="about-hero-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="container">
+        <div class="about-hero-content">
+            <span class="about-badge">About Us</span>
+            <h1 class="about-hero-title">About <span class="gradient-text">Chhohreivung</span></h1>
+            <p class="about-hero-subtitle">Making quality study resources accessible to every student.</p>
+        </div>
+    </div>
+</section>
+
+<section class="about-features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">📄</div>
+                <h3>Previous Year Questions</h3>
+                <p>Access organized PYQs for competitive exams and academic studies.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Study Tools</h3>
+                <p>AI-powered summaries and study tools coming soon. Currently under development.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast & Free</h3>
+                <p>Simple, fast, and completely free to use with no subscriptions.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-mission">
+    <div class="container">
+        <div class="mission-card fade-in">
+            <h2>Our Mission</h2>
+            <p>Chhohreivung was created to help students prepare smarter by bringing together previous year question papers and AI-powered study tools in one place. Our goal is to make learning easier, faster, and more accessible for everyone.</p>
+        </div>
+    </div>
+</section>
+
+<section class="about-stats">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card fade-in">
+                <span class="stat-number">{{ total_papers }}+</span>
+                <span class="stat-label">PDFs</span>
+            </div>
+            <div class="stat-card fade-in">
+                <span class="stat-number">{{ total_exams }}+</span>
+                <span class="stat-label">Multiple Exams</span>
+            </div>
+            <div class="stat-card fade-in">
+                <span class="stat-number">Free</span>
+                <span class="stat-label">No Subscriptions</span>
+            </div>
+            <div class="stat-card fade-in">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Mobile Friendly</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-footer-card">
+    <div class="container">
+        <div class="footer-note fade-in">
+            <p>Built with ❤️ for students.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

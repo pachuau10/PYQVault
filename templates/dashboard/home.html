@@ -1,0 +1,110 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - PYQVault{% endblock %}
+
+{% block content %}
+<div class="dash-page-header">
+    <h1 class="dash-page-title">Dashboard</h1>
+</div>
+
+<div class="dash-stats-grid">
+    <div class="dash-stat-card fade-in">
+        <div class="dash-stat-icon" style="background:rgba(124,58,237,0.15);color:#A855F7">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="dash-stat-info">
+            <span class="dash-stat-number" data-target="{{ total_pdfs }}">0</span>
+            <span class="dash-stat-label">Total PDFs</span>
+        </div>
+    </div>
+    <div class="dash-stat-card fade-in">
+        <div class="dash-stat-icon" style="background:rgba(59,130,246,0.15);color:#3B82F6">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="dash-stat-info">
+            <span class="dash-stat-number" data-target="{{ total_downloads }}">0</span>
+            <span class="dash-stat-label">Total Downloads</span>
+        </div>
+    </div>
+    <div class="dash-stat-card fade-in">
+        <div class="dash-stat-icon" style="background:rgba(34,197,94,0.15);color:#22C55E">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div class="dash-stat-info">
+            <span class="dash-stat-number" data-target="{{ total_categories }}">0</span>
+            <span class="dash-stat-label">Categories</span>
+        </div>
+    </div>
+    <div class="dash-stat-card fade-in">
+        <div class="dash-stat-icon" style="background:rgba(251,146,60,0.15);color:#FB923C">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="dash-stat-info">
+            <span class="dash-stat-number" data-target="{{ total_messages }}">0</span>
+            <span class="dash-stat-label">Messages</span>
+        </div>
+    </div>
+    <div class="dash-stat-card fade-in">
+        <div class="dash-stat-icon" style="background:rgba(16,185,129,0.15);color:#10B981">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        </div>
+        <div class="dash-stat-info">
+            <span class="dash-stat-number" data-target="{{ visitors_today }}">0</span>
+            <span class="dash-stat-label">Visitors Today</span>
+        </div>
+    </div>
+</div>
+
+{% if total_revenue > 0 %}
+<div class="dash-card fade-in">
+    <div class="dash-card-header">
+        <h2 class="dash-card-title">Revenue Overview</h2>
+        <span class="dash-text-muted">Total: ${{ total_revenue }}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div style="background:var(--dash-card);border-radius:var(--dash-radius);padding:16px">
+            <div style="font-size:0.75rem;color:var(--dash-text-muted);margin-bottom:4px">Total Revenue</div>
+            <div style="font-size:1.5rem;font-weight:700">${{ total_revenue }}</div>
+        </div>
+        <div style="background:var(--dash-card);border-radius:var(--dash-radius);padding:16px">
+            <div style="font-size:0.75rem;color:var(--dash-text-muted);margin-bottom:4px">This Month</div>
+            <div style="font-size:1.5rem;font-weight:700">${{ revenue_this_month }}</div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="dash-card fade-in">
+    <div class="dash-card-header">
+        <h2 class="dash-card-title">Recent Uploads</h2>
+        <a href="{% url 'dashboard_pdfs' %}" class="dash-btn dash-btn-sm">View All</a>
+    </div>
+    <div class="dash-table-wrap">
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Exam</th>
+                    <th>Subject</th>
+                    <th>Year</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in recent_papers %}
+                <tr>
+                    <td class="dash-table-title">{{ paper.title|truncatechars:50 }}</td>
+                    <td><span class="dash-badge">{{ paper.exam.name }}</span></td>
+                    <td>{{ paper.subject }}</td>
+                    <td>{{ paper.year }}</td>
+                    <td class="dash-text-muted">{{ paper.created_at|date:"M d, Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="dash-empty">No PDFs uploaded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

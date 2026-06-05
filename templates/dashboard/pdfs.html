@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}PDF Management - Dashboard{% endblock %}
+
+{% block content %}
+<div class="dash-page-header">
+    <h1 class="dash-page-title">PDF Management</h1>
+    <a href="/admin/papers/paper/add/" target="_blank" class="dash-btn dash-btn-primary">+ Upload PDF</a>
+</div>
+
+<div class="dash-card fade-in">
+    <div class="dash-card-header">
+        <h2 class="dash-card-title">All PDFs</h2>
+        <span class="dash-text-muted">{{ papers.count }} total</span>
+    </div>
+    <div class="dash-table-wrap">
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Exam</th>
+                    <th>Subject</th>
+                    <th>Year</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td class="dash-table-title">{{ paper.title|truncatechars:45 }}</td>
+                    <td><span class="dash-badge">{{ paper.exam.name }}</span></td>
+                    <td>{{ paper.subject }}</td>
+                    <td>{{ paper.year }}</td>
+                    <td class="dash-text-muted">{{ paper.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="dash-action-btns">
+                            <a href="{% url 'paper_detail' paper.slug %}" class="dash-btn-icon" title="View">👁</a>
+                            <a href="/admin/papers/paper/{{ paper.id }}/change/" target="_blank" class="dash-btn-icon" title="Edit">✏️</a>
+                            <a href="/admin/papers/paper/{{ paper.id }}/delete/" target="_blank" class="dash-btn-icon" title="Delete" style="color:#EF4444">🗑</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="dash-empty">No PDFs found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

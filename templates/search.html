@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Search Papers - PYQVault{% endblock %}
+{% block meta_desc %}Search previous year question papers by exam, subject, or year on PYQVault.{% endblock %}
+
+{% block content %}
+<div class="search-sticky-bar">
+    <div class="container">
+        <form class="search-form" method="GET" action="{% url 'search' %}">
+            <div class="search-bar-large">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" name="q" class="search-input-large" placeholder="Search papers..." value="{{ query }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <button type="button" class="filter-toggle" id="filterToggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+                Filters
+            </button>
+            <div class="search-filters" id="searchFilters">
+                <select name="exam" class="filter-select">
+                    <option value="">All Exams</option>
+                    {% for exam in exams %}
+                    <option value="{{ exam.slug }}" {% if selected_exam == exam.slug %}selected{% endif %}>{{ exam.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="subject" class="filter-input" placeholder="Subject" value="{{ selected_subject }}">
+                <select name="year" class="filter-select">
+                    <option value="">All Years</option>
+                    {% for y in years %}
+                    <option value="{{ y }}" {% if selected_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<section class="section section--search" id="searchResultsSection">
+    <div class="container">
+        <div class="search-results" id="searchResults">
+            {% if query or selected_exam or selected_subject or selected_year %}
+            <p class="results-count">
+                {{ papers.count }} result{% if papers.count != 1 %}s{% endif %}
+                {% if query %}for "<strong>{{ query }}</strong>"{% endif %}
+            </p>
+            {% endif %}
+
+            <div class="paper-grid">
+                {% for paper in papers %}
+                <div class="paper-card">
+                    <h3 class="paper-title">{{ paper.title }}</h3>
+                    <div class="paper-meta">
+                        <span class="meta-tag">{{ paper.exam.name }}</span>
+                        <span class="meta-tag">{{ paper.subject }}</span>
+                        <span class="meta-tag">{{ paper.year }}</span>
+                    </div>
+                    <div class="paper-actions">
+                        <a href="{% url 'paper_detail' paper.slug %}" class="btn btn-sm btn-primary">View PDF</a>
+                    </div>
+                </div>
+                {% empty %}
+                {% if query or selected_exam or selected_subject or selected_year %}
+                <div class="empty-state">
+                    <p>No papers match your search criteria. Try different keywords.</p>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.search-filters select, .search-filters input').forEach(function(el) {
+    el.addEventListener('change', function() { this.closest('form').submit(); });
+});
+
+var filterToggle = document.getElementById('filterToggle');
+var searchFilters = document.getElementById('searchFilters');
+if (filterToggle && searchFilters) {
+    if (searchFilters.querySelector('option[selected]')) {
+        searchFilters.classList.add('open');
+    }
+    filterToggle.addEventListener('click', function() {
+        searchFilters.classList.toggle('open');
+    });
+}
+
+var resultsEl = document.getElementById('searchResults');
+if (resultsEl && resultsEl.querySelector('.paper-card')) {
+    setTimeout(function() { resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+}
+</script>
+{% endblock %}
