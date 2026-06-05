@@ -75,9 +75,9 @@
                 <h2 class="section-title">Related Papers</h2>
                 <div class="paper-grid">
                     {% for related in related_papers %}
-                    <div class="paper-card">
+                    <div class="paper-card" data-href="{% url 'paper_detail' related.slug %}">
                         <div class="paper-thumb">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0-2 2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                         </div>
                         <h3 class="paper-title">{{ related.title }}</h3>
                         <div class="paper-meta">

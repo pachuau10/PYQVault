@@ -17,7 +17,7 @@
     <div class="container">
         <div class="paper-grid">
             {% for paper in papers %}
-            <div class="paper-card">
+            <div class="paper-card" data-href="{% url 'paper_detail' paper.slug %}">
                 <h3 class="paper-title">{{ paper.title }}</h3>
                 <div class="paper-meta">
                     <span class="meta-tag">{{ paper.exam.name }}</span>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="paper-actions">
                     <a href="{% url 'paper_detail' paper.slug %}" class="btn btn-sm btn-primary">View PDF</a>
-                    <a href="{% url 'paper_detail' paper.slug %}#ai-summary" class="btn btn-sm btn-outline">AI Summary</a>
+                    <a href="{{ paper.pdf_download_attachment_url }}" class="btn btn-sm btn-outline" download>Download</a>
                 </div>
             </div>
             {% empty %}

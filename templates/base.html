@@ -178,6 +178,15 @@
     </footer>
 
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+    document.querySelectorAll('.paper-card').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+            if (e.target.closest('a, button')) return;
+            var href = this.getAttribute('data-href');
+            if (href) window.location.href = href;
+        });
+    });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
