@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Page Not Found - PYQVault{% endblock %}
+{% block meta_robots %}noindex{% endblock %}
+
+{% block content %}
+<section class="error-section">
+    <div class="container">
+        <div class="error-card">
+            <div class="error-code">404</div>
+            <h1 class="error-title">Page Not Found</h1>
+            <p class="error-text">The page you are looking for does not exist or has been moved.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+            <a href="{% url 'search' %}" class="btn btn-secondary">Search Papers</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
