@@ -13,7 +13,7 @@
     <meta property="og:title" content="{% block og_title %}PYQNest - Previous Year Question Papers{% endblock %}">
     <meta property="og:description" content="{% block og_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:image" content="{% static 'pyqnest_og_banner.png' %}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'pyqnest_og_banner.png' %}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}PYQNest - Previous Year Question Papers{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
-    <meta name="twitter:image" content="{% static 'pyqnest_og_banner.png' %}">
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'pyqnest_og_banner.png' %}">
 
     <link rel="icon" type="image/svg+xml" href="{% static 'pyqnest_icon_1024.svg' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
