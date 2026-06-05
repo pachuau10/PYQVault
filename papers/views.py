@@ -172,7 +172,7 @@ def contact(request):
             )
             try:
                 send_mail(
-                    subject=f"[PYQHub] {subject}",
+                    subject=f"[PYQNest] {subject}",
                     message=f"From: {name} ({email})\n\n{message}",
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[settings.EMAIL_HOST_USER],
