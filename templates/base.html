@@ -25,7 +25,7 @@
     <meta name="twitter:description" content="{% block twitter_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
     <meta name="twitter:image" content="{% static 'og_image.png' %}">
 
-    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'pyqnest_icon_1024.svg' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -56,7 +56,7 @@
         "@type": "Organization",
         "name": "PYQNest",
         "url": "{{ request.scheme }}://{{ request.get_host }}/",
-        "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'favicon.png' %}",
+        "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'pyqnest_icon_1024.svg' %}",
         "description": "Free previous year question papers for JEE, NEET, MPSC, DCA, Board Exams and more."
     }
     </script>
