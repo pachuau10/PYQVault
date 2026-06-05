@@ -95,9 +95,9 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('B2_APPLICATION_KEY', '')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('B2_BUCKET', '')
 AWS_S3_ENDPOINT_URL = os.environ.get('B2_ENDPOINT', '')
 AWS_S3_REGION_NAME = os.environ.get('B2_REGION', 'us-west-004')
-AWS_DEFAULT_ACL = 'public-read'
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
-AWS_QUERYSTRING_AUTH = False
+AWS_QUERYSTRING_AUTH = True
+AWS_QUERYSTRING_EXPIRE = 86400
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
