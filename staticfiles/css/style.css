@@ -1084,8 +1084,9 @@ img { max-width: 100%; }
 #searchResults { scroll-margin-top: 160px; }
 
 @media (max-width: 767px) {
-    .section--search { padding-top: 140px; }
-    #searchResults { scroll-margin-top: 200px; }
+    .search-sticky-bar { position: relative; top: 0; }
+    .section--search { padding-top: 24px; }
+    #searchResults { scroll-margin-top: 0; }
 }
 
 .results-count {

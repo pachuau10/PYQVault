@@ -90,9 +90,5 @@ if (filterToggle && searchFilters) {
     });
 }
 
-var resultsEl = document.getElementById('searchResults');
-if (resultsEl && resultsEl.querySelector('.paper-card')) {
-    setTimeout(function() { resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
-}
 </script>
 {% endblock %}
