@@ -137,9 +137,10 @@
         <form action="{% url 'search' %}" method="GET" class="mobile-search-form">
             <div class="mobile-search-bar">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text-muted)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                <input type="text" name="q" class="mobile-search-input" placeholder="Search JEE 2025 Physics..." autocomplete="off" required>
+                <input type="text" name="q" class="mobile-search-input" placeholder="Search JEE 2025 Physics..." autocomplete="off" required id="mobileSearchInput">
                 <button type="button" class="mobile-search-close" id="mobileSearchClose" aria-label="Close search">&times;</button>
             </div>
+            <div class="mobile-search-suggestions" id="mobileSuggestions"></div>
         </form>
     </div>
 
@@ -186,6 +187,25 @@
             var href = this.getAttribute('data-href');
             if (href) window.location.href = href;
         });
+    });
+    document.getElementById('mobileSearchInput')?.addEventListener('input', function() {
+        var q = this.value.trim();
+        var list = document.getElementById('mobileSuggestions');
+        if (q.length < 2) { list.classList.remove('active'); list.innerHTML = ''; return; }
+        fetch('/search/suggest/?q=' + encodeURIComponent(q))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                list.innerHTML = '';
+                if (data.length === 0) { list.classList.remove('active'); return; }
+                data.forEach(function(item) {
+                    var div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>' + item.label + '</span>';
+                    div.addEventListener('click', function() { window.location.href = item.url; });
+                    list.appendChild(div);
+                });
+                list.classList.add('active');
+            });
     });
     </script>
     {% block extra_js %}{% endblock %}

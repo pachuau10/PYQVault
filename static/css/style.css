@@ -476,6 +476,14 @@ img { max-width: 100%; }
     flex-shrink: 0;
 }
 
+.mobile-search-suggestions {
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+    border-top: 1px solid var(--border);
+}
+.mobile-search-suggestions.active { display: block; }
+
 /* ====== HERO ====== */
 .hero {
     position: relative;
