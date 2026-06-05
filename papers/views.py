@@ -208,3 +208,35 @@ def paper_download(request, slug):
             pass
 
     return redirect('paper_detail', slug=slug)
+
+
+@csrf_exempt
+def generate_presigned_upload(request):
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'unauthorized'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+
+    filename = request.POST.get('filename', '')
+    if not filename:
+        return JsonResponse({'error': 'filename required'}, status=400)
+
+    import uuid
+    ext = filename.rsplit('.', 1)[-1] if '.' in filename else 'pdf'
+    key = f"pdfs/{uuid.uuid4()}.{ext}"
+
+    try:
+        from django.core.files.storage import default_storage
+        s3 = default_storage.connection.meta.client
+        url = s3.generate_presigned_url(
+            ClientMethod='put_object',
+            Params={
+                'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
+                'Key': key,
+                'ContentType': 'application/pdf',
+            },
+            ExpiresIn=3600,
+        )
+        return JsonResponse({'url': url, 'key': key})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

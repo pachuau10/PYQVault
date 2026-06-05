@@ -1,7 +1,29 @@
+from django import forms
 from django.contrib import admin
 from django.db.models import Sum
+from django.urls import reverse
 from django.utils.html import format_html
 from .models import Exam, Paper, AISummary, Topic, Subscription, ContactMessage, PageView, Revenue
+
+
+class PdfUploadWidget(forms.Widget):
+    template_name = "admin/widgets/pdf_upload.html"
+
+    def get_context(self, name, value, attrs):
+        ctx = super().get_context(name, value, attrs)
+        ctx["upload_url"] = reverse("generate_presigned_upload")
+        ctx["current_name"] = value.name if value else ""
+        return ctx
+
+    class Media:
+        js = ("admin/js/pdf_upload.js",)
+
+
+class PaperForm(forms.ModelForm):
+    class Meta:
+        model = Paper
+        fields = "__all__"
+        widgets = {"pdf_file": PdfUploadWidget}
 
 
 @admin.register(Exam)
@@ -12,6 +34,7 @@ class ExamAdmin(admin.ModelAdmin):
 
 @admin.register(Paper)
 class PaperAdmin(admin.ModelAdmin):
+    form = PaperForm
     list_display = ("title", "exam", "subject", "year", "created_at")
     list_filter = ("exam", "year", "subject")
     search_fields = ("title", "subject", "description")
