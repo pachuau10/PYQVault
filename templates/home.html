@@ -68,7 +68,7 @@
                 </div>
                 <div class="paper-actions">
                     <a href="{% url 'paper_detail' paper.slug %}" class="btn btn-sm btn-primary">View</a>
-                    <a href="{% url 'paper_download' paper.slug %}" class="btn btn-sm btn-secondary">Download</a>
+                    <a href="{% url 'paper_detail' paper.slug %}" class="btn btn-sm btn-secondary">Download</a>
                 </div>
             </div>
             {% empty %}
