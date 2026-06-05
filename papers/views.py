@@ -116,7 +116,7 @@ def search_suggest(request):
         return JsonResponse([], safe=False)
     papers = Paper.objects.filter(
         Q(title__icontains=q) | Q(subject__icontains=q) | Q(exam__name__icontains=q)
-    )[:6]
+    )[:50]
     results = []
     seen = set()
     for p in papers:
@@ -125,7 +125,7 @@ def search_suggest(request):
             seen.add(label)
             results.append({"label": label, "url": p.get_absolute_url()})
     if not results:
-        exams = Exam.objects.filter(name__icontains=q)[:3]
+        exams = Exam.objects.filter(name__icontains=q)[:10]
         for e in exams:
             results.append({"label": f"{e.name} papers", "url": f"/{e.slug}/"})
     return JsonResponse(results, safe=False)
