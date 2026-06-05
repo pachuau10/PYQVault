@@ -60,6 +60,9 @@ class Paper(models.Model):
             if parsed.netloc and parsed.netloc not in ("example.com", "www.example.com"):
                 return self.pdf_url
         if self.pdf_file:
+            name = self.pdf_file.name
+            if name and '://' in name:
+                return name
             try:
                 return self.pdf_file.url
             except Exception:
