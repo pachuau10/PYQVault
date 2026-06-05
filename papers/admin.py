@@ -31,7 +31,7 @@ class PaperForm(forms.ModelForm):
         instance = super().save(commit=False)
         key = self.cleaned_data.get("pdf_key")
         if key:
-            instance.pdf_file.name = key
+            instance.pdf_file = key
         if commit:
             instance.save()
         return instance
