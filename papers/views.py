@@ -213,9 +213,6 @@ def paper_download(request, slug):
 
 @csrf_exempt
 def generate_presigned_upload(request):
-    from botocore.config import Config
-    import boto3
-
     if not request.user.is_staff:
         return JsonResponse({'error': 'unauthorized'}, status=403)
     if request.method != 'POST':
@@ -225,28 +222,36 @@ def generate_presigned_upload(request):
     if not filename:
         return JsonResponse({'error': 'filename required'}, status=400)
 
+    try:
+        from botocore.config import Config
+        import boto3
+    except ImportError:
+        return JsonResponse({'error': 'boto3 not available on server'}, status=500)
+
     ext = filename.rsplit('.', 1)[-1] if '.' in filename else 'pdf'
     key = f"pdfs/{uuid.uuid4()}.{ext}"
 
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=settings.AWS_S3_REGION_NAME,
-        endpoint_url=settings.AWS_S3_ENDPOINT_URL,
-        config=Config(signature_version='s3v4')
-    )
+    try:
+        s3 = boto3.client(
+            's3',
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_S3_REGION_NAME,
+            endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+            config=Config(signature_version='s3v4')
+        )
 
-    post = s3.generate_presigned_post(
-        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-        Key=key,
-        Fields={'acl': 'private', 'Content-Type': 'application/pdf'},
-        Conditions=[
-            {'acl': 'private'},
-            {'Content-Type': 'application/pdf'},
-            ['content-length-range', 1, 52428800],
-        ],
-        ExpiresIn=3600,
-    )
+        post = s3.generate_presigned_post(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=key,
+            Fields={'Content-Type': 'application/pdf'},
+            Conditions=[
+                {'Content-Type': 'application/pdf'},
+                ['content-length-range', 1, 52428800],
+            ],
+            ExpiresIn=3600,
+        )
 
-    return JsonResponse({'url': post['url'], 'fields': post['fields'], 'key': key})
+        return JsonResponse({'url': post['url'], 'fields': post['fields'], 'key': key})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
