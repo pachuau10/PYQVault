@@ -222,24 +222,12 @@ def generate_presigned_upload(request):
     if not filename:
         return JsonResponse({'error': 'filename required'}, status=400)
 
-    try:
-        from botocore.config import Config
-        import boto3
-    except ImportError:
-        return JsonResponse({'error': 'boto3 not available on server'}, status=500)
-
     ext = filename.rsplit('.', 1)[-1] if '.' in filename else 'pdf'
     key = f"pdfs/{uuid.uuid4()}.{ext}"
 
     try:
-        s3 = boto3.client(
-            's3',
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            region_name=settings.AWS_S3_REGION_NAME,
-            endpoint_url=settings.AWS_S3_ENDPOINT_URL,
-            config=Config(signature_version='s3v4')
-        )
+        from django.core.files.storage import default_storage
+        s3 = default_storage.connection.meta.client
 
         post = s3.generate_presigned_post(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
