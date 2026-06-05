@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import Exam, Paper, AISummary, Topic, Subscription, ContactMessage, PageView, Revenue
@@ -39,8 +39,15 @@ class PaperForm(forms.ModelForm):
 
 @admin.register(Exam)
 class ExamAdmin(admin.ModelAdmin):
-    list_display = ("name", "paper_count", "order")
+    list_display = ("name", "paper_count_display", "order")
     prepopulated_fields = {"slug": ("name",)}
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(_paper_cnt=Count("papers"))
+
+    @admin.display(description="Papers")
+    def paper_count_display(self, obj):
+        return getattr(obj, "_paper_cnt", obj.paper_set.count())
 
 
 @admin.register(Paper)

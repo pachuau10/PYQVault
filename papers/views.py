@@ -3,7 +3,7 @@ from datetime import date
 from urllib.parse import urlparse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from django.db.models import Q, F
+from django.db.models import Q, F, Count
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -15,7 +15,7 @@ DAILY_LIMIT = 3
 
 
 def home(request):
-    exams = Exam.objects.all()[:6]
+    exams = Exam.objects.annotate(paper_count=Count("papers"))[:6]
     latest_papers = Paper.objects.all()[:6]
     total_papers = Paper.objects.count()
     total_exams = Exam.objects.count()
@@ -28,7 +28,8 @@ def home(request):
 
 
 def exams(request):
-    return render(request, "exams.html", {"exams": Exam.objects.all()})
+    exams = Exam.objects.annotate(paper_count=Count("papers"))
+    return render(request, "exams.html", {"exams": exams})
 
 
 def dispatcher(request, slug):
