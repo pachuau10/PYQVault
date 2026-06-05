@@ -101,6 +101,10 @@ AWS_QUERYSTRING_EXPIRE = 86400
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Allow large PDF uploads (50 MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
+
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
