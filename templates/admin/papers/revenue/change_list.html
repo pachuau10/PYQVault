@@ -1,0 +1,23 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+    <h1>Revenue Dashboard</h1>
+{% endblock %}
+
+{% block result_list %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px">
+        <div style="background:linear-gradient(135deg,#7C3AED,#A855F7);border-radius:12px;padding:20px;color:white">
+            <div style="font-size:0.75rem;opacity:0.85;margin-bottom:4px">TOTAL REVENUE</div>
+            <div style="font-size:1.75rem;font-weight:700">${{ total_revenue|floatformat:2 }}</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#059669,#10B981);border-radius:12px;padding:20px;color:white">
+            <div style="font-size:0.75rem;opacity:0.85;margin-bottom:4px">ADSENSE</div>
+            <div style="font-size:1.75rem;font-weight:700">${{ adsense_revenue|floatformat:2 }}</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#2563EB,#3B82F6);border-radius:12px;padding:20px;color:white">
+            <div style="font-size:0.75rem;opacity:0.85;margin-bottom:4px">ENTRIES</div>
+            <div style="font-size:1.75rem;font-weight:700">{{ entry_count }}</div>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock %}

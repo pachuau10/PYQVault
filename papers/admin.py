@@ -1,11 +1,74 @@
 from django.contrib import admin
+from django.db.models import Sum
+from django.utils.html import format_html
 from .models import Exam, Paper, AISummary, Topic, Subscription, ContactMessage, PageView, Revenue
 
-admin.site.register(Exam)
-admin.site.register(Paper)
-admin.site.register(AISummary)
-admin.site.register(Topic)
-admin.site.register(Subscription)
-admin.site.register(ContactMessage)
-admin.site.register(PageView)
-admin.site.register(Revenue)
+
+@admin.register(Exam)
+class ExamAdmin(admin.ModelAdmin):
+    list_display = ("name", "paper_count", "order")
+    prepopulated_fields = {"slug": ("name",)}
+
+
+@admin.register(Paper)
+class PaperAdmin(admin.ModelAdmin):
+    list_display = ("title", "exam", "subject", "year", "created_at")
+    list_filter = ("exam", "year", "subject")
+    search_fields = ("title", "subject", "description")
+    prepopulated_fields = {"slug": ("title",)}
+    date_hierarchy = "created_at"
+
+
+@admin.register(AISummary)
+class AISummaryAdmin(admin.ModelAdmin):
+    list_display = ("paper", "difficulty", "created_at")
+    list_filter = ("difficulty",)
+
+
+@admin.register(Topic)
+class TopicAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ("user", "is_active", "started_at", "expires_at")
+    list_filter = ("is_active",)
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ("name", "email", "subject", "created_at")
+    search_fields = ("name", "email", "subject", "message")
+    readonly_fields = ("name", "email", "subject", "message", "created_at")
+
+
+@admin.register(PageView)
+class PageViewAdmin(admin.ModelAdmin):
+    list_display = ("path", "ip_address", "timestamp")
+    list_filter = ("timestamp",)
+    search_fields = ("path", "ip_address")
+    date_hierarchy = "timestamp"
+
+
+@admin.register(Revenue)
+class RevenueAdmin(admin.ModelAdmin):
+    list_display = ("date", "amount_display", "source", "note")
+    list_filter = ("source", "date")
+    date_hierarchy = "date"
+    search_fields = ("note", "source")
+
+    def changelist_view(self, request, extra_context=None):
+        total = Revenue.objects.aggregate(total=Sum("amount"))["total"] or 0
+        adsense = Revenue.objects.filter(source="adsense").aggregate(total=Sum("amount"))["total"] or 0
+        count = Revenue.objects.count()
+        extra_context = extra_context or {}
+        extra_context["total_revenue"] = total
+        extra_context["adsense_revenue"] = adsense
+        extra_context["entry_count"] = count
+        return super().changelist_view(request, extra_context=extra_context)
+
+    @admin.display(description="Amount")
+    def amount_display(self, obj):
+        color = "#22C55E" if obj.amount > 0 else "#EF4444"
+        return format_html('<span style="color:{};font-weight:600">${}</span>', color, obj.amount)
