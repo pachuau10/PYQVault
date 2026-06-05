@@ -210,6 +210,35 @@ def paper_download(request, slug):
     return redirect('paper_detail', slug=slug)
 
 
+def setup_b2_cors(request):
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'unauthorized'}, status=403)
+
+    try:
+        from django.core.files.storage import default_storage
+        s3 = default_storage.connection.meta.client
+
+        s3.put_bucket_cors(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            CORSConfiguration={
+                "CORSRules": [
+                    {
+                        "AllowedOrigins": [
+                            "https://www.pyqnest.in",
+                            "http://localhost:8000",
+                        ],
+                        "AllowedMethods": ["GET", "PUT"],
+                        "AllowedHeaders": ["Content-Type"],
+                        "MaxAgeSeconds": 3600,
+                    },
+                ]
+            },
+        )
+        return JsonResponse({'success': True, 'message': 'CORS rules applied'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
 @csrf_exempt
 def generate_presigned_upload(request):
     if not request.user.is_staff:
