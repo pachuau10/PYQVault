@@ -1,4 +1,5 @@
 import json
+import uuid
 from datetime import date
 from urllib.parse import urlparse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -6,9 +7,10 @@ from django.http import JsonResponse
 from django.db.models import Q, F
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.mail import send_mail
+from botocore.config import Config
+import boto3
 from .models import Exam, Paper, AISummary, ContactMessage
 
 DAILY_LIMIT = 3
@@ -208,3 +210,41 @@ def paper_download(request, slug):
             pass
 
     return redirect('paper_detail', slug=slug)
+
+
+@csrf_exempt
+def generate_presigned_upload(request):
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'unauthorized'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+
+    filename = request.POST.get('filename', '')
+    if not filename:
+        return JsonResponse({'error': 'filename required'}, status=400)
+
+    ext = filename.rsplit('.', 1)[-1] if '.' in filename else 'pdf'
+    key = f"pdfs/{uuid.uuid4()}.{ext}"
+
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME,
+        endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+        config=Config(signature_version='s3v4')
+    )
+
+    post = s3.generate_presigned_post(
+        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+        Key=key,
+        Fields={'acl': 'private', 'Content-Type': 'application/pdf'},
+        Conditions=[
+            {'acl': 'private'},
+            {'Content-Type': 'application/pdf'},
+            ['content-length-range', 1, 52428800],
+        ],
+        ExpiresIn=3600,
+    )
+
+    return JsonResponse({'url': post['url'], 'fields': post['fields'], 'key': key})
