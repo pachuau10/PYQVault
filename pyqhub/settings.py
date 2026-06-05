@@ -37,7 +37,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'pyqvault.urls'
+ROOT_URLCONF = 'pyqhub.urls'
 
 TEMPLATES = [
     {
@@ -55,7 +55,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pyqvault.wsgi.application'
+WSGI_APPLICATION = 'pyqhub.wsgi.application'
 
 import os
 

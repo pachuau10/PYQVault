@@ -4,24 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PYQVault - Previous Year Question Papers{% endblock %}</title>
+    <title>{% block title %}PYQHub - Previous Year Question Papers{% endblock %}</title>
     <meta name="description" content="{% block meta_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
     <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
 
     <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
 
-    <meta property="og:title" content="{% block og_title %}PYQVault - Previous Year Question Papers{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}PYQHub - Previous Year Question Papers{% endblock %}">
     <meta property="og:description" content="{% block og_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:image" content="{% static 'og_image.png' %}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:site_name" content="PYQVault">
+    <meta property="og:site_name" content="PYQHub">
     <meta property="og:locale" content="en_US">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}PYQVault - Previous Year Question Papers{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}PYQHub - Previous Year Question Papers{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_desc %}Access thousands of PYQs for JEE, NEET, MPSC, DCA, Board Exams and more. Read online and download PDFs instantly.{% endblock %}">
     <meta name="twitter:image" content="{% static 'og_image.png' %}">
 
@@ -37,7 +37,7 @@
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "PYQVault",
+        "name": "PYQHub",
         "url": "{{ request.scheme }}://{{ request.get_host }}/",
         "potentialAction": {
             "@type": "SearchAction",
@@ -54,7 +54,7 @@
     {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "PYQVault",
+        "name": "PYQHub",
         "url": "{{ request.scheme }}://{{ request.get_host }}/",
         "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'favicon.png' %}",
         "description": "Free previous year question papers for JEE, NEET, MPSC, DCA, Board Exams and more."
@@ -150,7 +150,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>PYQVault</h4>
+                    <h4>PYQHub</h4>
                     <ul>
                         <li><a href="{% url 'about' %}">About</a></li>
                         <li><a href="{% url 'about' %}">Contact</a></li>
@@ -172,7 +172,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 PYQVault. Built for students.</p>
+                <p>&copy; 2026 PYQHub. Built for students.</p>
             </div>
         </div>
     </footer>

@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "pyqvault/wsgi.py",
+      "src": "pyqhub/wsgi.py",
       "use": "@vercel/python",
       "config": {
         "maxLambdaSize": "15mb",
@@ -13,7 +13,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "pyqvault/wsgi.py"
+      "dest": "pyqhub/wsgi.py"
     }
   ]
 }
