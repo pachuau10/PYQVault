@@ -1,4 +1,4 @@
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
   var uploadInProgress = false;
   var pendingSubmit = false;
   var targetForm = null;
@@ -73,4 +73,4 @@
       if (el) el.textContent = 'Waiting for upload to finish before saving...';
     }
   }, true);
-})();
+});
