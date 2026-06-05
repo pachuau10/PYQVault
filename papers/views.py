@@ -15,7 +15,7 @@ DAILY_LIMIT = 3
 
 
 def home(request):
-    exams = Exam.objects.annotate(paper_count=Count("papers"))[:6]
+    exams = Exam.objects.annotate(num_papers=Count("papers"))[:6]
     latest_papers = Paper.objects.all()[:6]
     total_papers = Paper.objects.count()
     total_exams = Exam.objects.count()
@@ -28,7 +28,7 @@ def home(request):
 
 
 def exams(request):
-    exams = Exam.objects.annotate(paper_count=Count("papers"))
+    exams = Exam.objects.annotate(num_papers=Count("papers"))
     return render(request, "exams.html", {"exams": exams})
 
 
