@@ -250,9 +250,9 @@ def generate_presigned_upload(request):
     if not filename:
         return JsonResponse({'error': 'filename required'}, status=400)
 
-    import re, uuid
-    safe_name = re.sub(r'[^a-zA-Z0-9._-]', '_', filename)
-    key = f"pdfs/{uuid.uuid4().hex[:8]}_{safe_name}"
+    import re
+    safe_name = re.sub(r'[^a-zA-Z0-9._ -]', '_', filename)
+    key = f"pdfs/{safe_name}"
 
     try:
         from django.core.files.storage import default_storage
