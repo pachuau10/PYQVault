@@ -1,4 +1,5 @@
-import pyaes
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 import json
 import base64
 import struct
@@ -20,22 +21,17 @@ else:
 
 
 def aes_cbc_encrypt(data, key):
-    iv = b'\x00' * 16
-    cipher = pyaes.AESModeOfOperationCBC(key, iv)
-    return cipher.encrypt(data)
+    cipher = Cipher(algorithms.AES(key), modes.CBC(b'\x00' * 16),
+                    backend=default_backend())
+    e = cipher.encryptor()
+    return e.update(data) + e.finalize()
 
 
 def aes_cbc_decrypt(data, key):
-    iv = b'\x00' * 16
-    aes = pyaes.AES(key)
-    plaintext = b''
-    prev = iv
-    for i in range(0, len(data), 16):
-        block = data[i:i+16]
-        decrypted = aes.decrypt(block)
-        plaintext += bytes(a ^ b for a, b in zip(decrypted, prev))
-        prev = block
-    return plaintext
+    cipher = Cipher(algorithms.AES(key), modes.CBC(b'\x00' * 16),
+                    backend=default_backend())
+    d = cipher.decryptor()
+    return d.update(data) + d.finalize()
 
 
 def aes_cbc_encrypt_a32(data, key):
@@ -46,38 +42,49 @@ def aes_cbc_decrypt_a32(data, key):
     return str_to_a32(aes_cbc_decrypt(a32_to_str(data), a32_to_str(key)))
 
 
-class Counter128:
-    def __init__(self, initial_value=0):
-        self._counter = initial_value.to_bytes(16, 'big')
-    def __call__(self):
-        result = self._counter
-        val = int.from_bytes(self._counter, 'big') + 1
-        if val >= 2**128:
-            val = 0
-        self._counter = val.to_bytes(16, 'big')
+class _AESCTR:
+    def __init__(self, key, initial_counter):
+        nonce = initial_counter.to_bytes(16, 'big')
+        self._cipher = Cipher(algorithms.AES(key), modes.CTR(nonce),
+                              backend=default_backend())
+        self._e = self._cipher.encryptor()
+    def decrypt(self, data):
+        return self._e.update(data)
+    def encrypt(self, data):
+        return self._e.update(data)
+
+
+class _AESCBC:
+    def __init__(self, key, iv):
+        self._cipher = Cipher(algorithms.AES(key), modes.CBC(iv),
+                              backend=default_backend())
+        self._e = self._cipher.encryptor()
+    def encrypt(self, data):
+        return self._e.update(data)
+
+
+class _AESECB:
+    def __init__(self, key):
+        self._cipher = Cipher(algorithms.AES(key), modes.ECB(),
+                              backend=default_backend())
+        self._e = self._cipher.encryptor()
+    def encrypt(self, data):
+        result = b''
+        for i in range(0, len(data), 16):
+            result += self._e.update(data[i:i+16])
         return result
 
 
 def new_aes_ctr(key, initial_counter):
-    counter = Counter128(initial_counter)
-    return pyaes.AESModeOfOperationCTR(key, counter=counter)
+    return _AESCTR(key, initial_counter)
 
 
 def new_aes_cbc(key, iv):
-    return pyaes.AESModeOfOperationCBC(key, iv)
+    return _AESCBC(key, iv)
 
-
-class ECB:
-    def __init__(self, key):
-        self._ecb = pyaes.AESModeOfOperationECB(key)
-    def encrypt(self, data):
-        result = b''
-        for i in range(0, len(data), 16):
-            result += self._ecb.encrypt(data[i:i+16])
-        return result
 
 def new_aes_ecb(key):
-    return ECB(key)
+    return _AESECB(key)
 
 
 def stringhash(str, aeskey):
@@ -135,7 +142,7 @@ def str_to_a32(b):
         b = makebyte(b)
     if len(b) % 4:
         b += b'\0' * (4 - len(b) % 4)
-    return struct.unpack('>%dI' % (len(b) / 4), b)
+    return struct.unpack('>%dI' % (len(b) // 4), b)
 
 
 def mpi_to_int(s):
