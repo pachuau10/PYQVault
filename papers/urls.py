@@ -15,6 +15,7 @@ urlpatterns = [
     path("<slug:exam_slug>/<int:year>/", views.exam_detail, name="exam_detail_year"),
     re_path(r"^(?P<slug>.+)-question-paper-pdf/$", views.paper_detail, name="paper_detail"),
     path("setup-b2-cors/", views.setup_b2_cors, name="setup_b2_cors"),
+    path("generate-presigned-upload/", views.generate_presigned_upload, name="generate_presigned_upload"),
     path("<slug:slug>/download/", views.paper_download, name="paper_download"),
     path("<slug:slug>/", views.dispatcher, name="exam_detail"),
 ]
