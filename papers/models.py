@@ -45,11 +45,22 @@ class Paper(models.Model):
     class Meta:
         ordering = ["-year", "subject"]
 
+    def _generate_description(self):
+        templates = [
+            f"Looking for {self.exam.name} {self.year} {self.subject} question paper? Download the official PYQ PDF for free. Ideal for practicing and understanding the exam pattern before the actual exam.",
+            f"Download {self.exam.name} {self.year} {self.subject} previous year question paper PDF. Practice with real exam questions to boost your preparation and score higher marks.",
+            f"Free {self.exam.name} {self.year} {self.subject} question paper PDF download. {self.subject} previous year questions with detailed solutions to help you ace your {self.exam.name} exam.",
+            f"Prepare for {self.exam.name} with the official {self.year} {self.subject} question paper. Download the PDF and practice {self.subject} questions from the actual exam. Totally free.",
+            f"Get the {self.exam.name} {self.year} {self.subject} PYQ PDF for free. Solve real exam questions and improve your speed and accuracy for the upcoming {self.exam.name} exam.",
+        ]
+        idx = hash(self.slug or self.title) % len(templates)
+        return templates[idx]
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f"{self.exam.name} {self.year} {self.subject} {self.shift}")
         if not self.description:
-            self.description = f"Download {self.exam.name} {self.year} {self.subject} question paper PDF. Free previous year question paper for {self.exam.name} {self.subject} exam preparation."
+            self.description = self._generate_description()
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
