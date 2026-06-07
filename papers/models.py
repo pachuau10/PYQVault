@@ -48,6 +48,8 @@ class Paper(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f"{self.exam.name} {self.year} {self.subject} {self.shift}")
+        if not self.description:
+            self.description = f"Download {self.exam.name} {self.year} {self.subject} question paper PDF. Free previous year question paper for {self.exam.name} {self.subject} exam preparation."
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
