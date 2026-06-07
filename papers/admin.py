@@ -59,6 +59,16 @@ class PaperAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     date_hierarchy = "created_at"
     ordering = ("-created_at",)
+    actions = ("regenerate_descriptions",)
+
+    def regenerate_descriptions(self, request, queryset):
+        count = 0
+        for paper in queryset:
+            paper.description = paper._generate_description()
+            paper.save(update_fields=("description",))
+            count += 1
+        self.message_user(request, f"Regenerated descriptions for {count} paper(s).")
+    regenerate_descriptions.short_description = "Regenerate descriptions for selected papers"
 
 
 @admin.register(AISummary)

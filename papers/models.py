@@ -46,12 +46,25 @@ class Paper(models.Model):
         ordering = ["-year", "subject"]
 
     def _generate_description(self):
+        exam_name = self.exam.name
+        subj = self.subject
+        yr = self.year
         templates = [
-            f"Looking for {self.exam.name} {self.year} {self.subject} question paper? Download the official PYQ PDF for free. Ideal for practicing and understanding the exam pattern before the actual exam.",
-            f"Download {self.exam.name} {self.year} {self.subject} previous year question paper PDF. Practice with real exam questions to boost your preparation and score higher marks.",
-            f"Free {self.exam.name} {self.year} {self.subject} question paper PDF download. {self.subject} previous year questions with detailed solutions to help you ace your {self.exam.name} exam.",
-            f"Prepare for {self.exam.name} with the official {self.year} {self.subject} question paper. Download the PDF and practice {self.subject} questions from the actual exam. Totally free.",
-            f"Get the {self.exam.name} {self.year} {self.subject} PYQ PDF for free. Solve real exam questions and improve your speed and accuracy for the upcoming {self.exam.name} exam.",
+            f"Looking for {exam_name} {yr} {subj} question paper? Download the official PYQ PDF for free. Ideal for practicing and understanding the exam pattern before the actual exam.",
+            f"Download {exam_name} {yr} {subj} previous year question paper PDF. Practice with real exam questions to boost your preparation and score higher marks.",
+            f"Free {exam_name} {yr} {subj} question paper PDF download. Practice {subj} questions from the actual {exam_name} exam to improve your performance.",
+            f"Prepare for {exam_name} with the official {yr} {subj} question paper. Download the PDF and practice {subj} questions from the real exam. Completely free.",
+            f"Get the {exam_name} {yr} {subj} PYQ PDF for free. Solve actual exam questions and build confidence for your upcoming {exam_name} test.",
+            f"{exam_name} {yr} {subj} question paper — download free PDF. Practice with previous year questions to understand the exam difficulty and key topics.",
+            f"Download {exam_name} {subj} question paper from {yr}. This PYQ PDF helps you practice real exam questions and improve your problem-solving speed.",
+            f"Need {exam_name} {yr} {subj} PYQ? Download the official question paper PDF and start practicing today. Best resource for {exam_name} exam preparation.",
+            f"Prepare smarter with {exam_name} {yr} {subj} question paper PDF. Solve actual past exam questions and get familiar with the paper pattern and marking scheme.",
+            f"Free download: {exam_name} {yr} {subj} previous year question paper. Use this PDF to practice {subj} questions and boost your {exam_name} exam score.",
+            f"Practice with {exam_name} {yr} {subj} question paper. This PDF contains real exam questions to help you prepare effectively for {exam_name}.",
+            f"{exam_name} {yr} {subj} PYQ available for free download. Practice past questions to master {subj} and ace your {exam_name} examination.",
+            f"Download {exam_name} {subj} previous year question paper ({yr}) PDF. Real exam questions for focused practice. Ideal for {exam_name} aspirants.",
+            f"Get free access to {exam_name} {yr} {subj} question paper. Solve previous year questions to identify important topics and improve your preparation strategy.",
+            f"Boost your {exam_name} preparation with {yr} {subj} question paper PDF. Practice with actual exam questions and track your progress before the final exam.",
         ]
         idx = hash(self.slug or self.title) % len(templates)
         return templates[idx]
