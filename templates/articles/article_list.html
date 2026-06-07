@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Study Tips & Guides - PYQNest{% endblock %}
+{% block meta_desc %}Read study tips, exam preparation guides, and educational articles to help you ace your exams with PYQNest.{% endblock %}
+{% block og_title %}Study Tips & Guides - PYQNest{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="page-title">Study Tips & Guides</h1>
+        <p class="page-subtitle">Articles and guides to help you prepare better for your exams.</p>
+
+        <div class="article-grid">
+            {% for article in articles %}
+            <a href="{{ article.get_absolute_url }}" class="article-card">
+                <h2 class="article-title">{{ article.title }}</h2>
+                <p class="article-excerpt">{{ article.excerpt }}</p>
+                <div class="article-meta">
+                    <span class="article-date">{{ article.published_at|date:"F j, Y" }}</span>
+                </div>
+            </a>
+            {% empty %}
+            <div class="empty-state">
+                <p>No articles yet. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

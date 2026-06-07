@@ -4,7 +4,7 @@ from django.db.models import Sum, Count
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from .models import Exam, Paper, AISummary, Topic, Subscription, ContactMessage, PageView, Revenue
+from .models import Exam, Paper, AISummary, Topic, Subscription, ContactMessage, PageView, Revenue, Article
 
 
 class PdfUploadWidget(forms.Widget):
@@ -101,6 +101,14 @@ class TopicAdmin(admin.ModelAdmin):
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ("user", "is_active", "started_at", "expires_at")
     list_filter = ("is_active",)
+
+
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ("title", "published_at")
+    prepopulated_fields = {"slug": ("title",)}
+    search_fields = ("title", "content")
+    date_hierarchy = "published_at"
 
 
 @admin.register(ContactMessage)

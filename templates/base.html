@@ -74,6 +74,7 @@
                 <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
                 <li><a href="{% url 'exams' %}" class="nav-link">Exams</a></li>
                 <li><a href="{% url 'latest' %}" class="nav-link">Latest Papers</a></li>
+                <li><a href="{% url 'article_list' %}" class="nav-link">Study Tips</a></li>
                 <li><a href="{% url 'about' %}" class="nav-link">About</a></li>
                 <li><a href="{% url 'contact' %}" class="nav-link">Contact</a></li>
             </ul>
@@ -114,6 +115,10 @@
             <a href="{% url 'latest' %}" class="drawer-link">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 Latest Papers
+            </a>
+            <a href="{% url 'article_list' %}" class="drawer-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Study Tips
             </a>
             <a href="{% url 'about' %}" class="drawer-link">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -163,6 +168,7 @@
                     <ul>
                         <li><a href="{% url 'exams' %}">Exams</a></li>
                         <li><a href="{% url 'latest' %}">Latest Papers</a></li>
+                        <li><a href="{% url 'article_list' %}">Study Tips</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">

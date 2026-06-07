@@ -1,6 +1,7 @@
 import os
 
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
 from urllib.parse import urlparse
 
@@ -169,6 +170,25 @@ class PageView(models.Model):
 
     def __str__(self):
         return f"{self.path} @ {self.timestamp.strftime('%Y-%m-%d %H:%M')}"
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=300)
+    slug = models.SlugField(unique=True, max_length=300)
+    excerpt = models.TextField(help_text="Short summary shown in listings")
+    content = models.TextField()
+    published_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-published_at"]
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return f"/articles/{self.slug}/"
 
 
 class Revenue(models.Model):

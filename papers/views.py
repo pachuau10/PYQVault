@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.mail import send_mail
-from .models import Exam, Paper, AISummary, ContactMessage
+from .models import Exam, Paper, AISummary, ContactMessage, Article
 
 DAILY_LIMIT = 3
 
@@ -270,3 +270,13 @@ def generate_presigned_upload(request):
         return JsonResponse({'url': url, 'key': key})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+def article_list(request):
+    articles = Article.objects.all()
+    return render(request, "articles/article_list.html", {"articles": articles})
+
+
+def article_detail(request, slug):
+    article = get_object_or_404(Article, slug=slug)
+    return render(request, "articles/article_detail.html", {"article": article})

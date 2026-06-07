@@ -1,6 +1,6 @@
 from datetime import date
 from django.urls import reverse
-from papers.models import Exam, Paper
+from papers.models import Exam, Paper, Article
 
 
 def get_sitemap_urls(request):
@@ -35,6 +35,15 @@ def get_sitemap_urls(request):
             "priority": 0.9,
             "changefreq": "daily",
             "lastmod": None,
+        })
+
+    # Articles
+    for article in Article.objects.all():
+        urls.append({
+            "loc": f"{base}{article.get_absolute_url()}",
+            "priority": 0.6,
+            "changefreq": "monthly",
+            "lastmod": article.updated_at.isoformat() if article.updated_at else None,
         })
 
     # Papers

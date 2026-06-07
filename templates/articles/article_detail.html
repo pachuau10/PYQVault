@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} - PYQNest{% endblock %}
+{% block meta_desc %}{{ article.excerpt }}{% endblock %}
+{% block og_title %}{{ article.title }} - PYQNest{% endblock %}
+{% block og_type %}article{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="article-detail">
+            <div class="article-detail-header">
+                <h1 class="article-detail-title">{{ article.title }}</h1>
+                <div class="article-detail-meta">
+                    <span>{{ article.published_at|date:"F j, Y" }}</span>
+                </div>
+            </div>
+            <div class="article-detail-content">
+                {{ article.content|linebreaks }}
+            </div>
+            <div class="article-detail-footer">
+                <a href="{% url 'article_list' %}" class="btn btn-secondary">&larr; Back to Articles</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
