@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.db.models import Sum, Count
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from .models import Exam, Paper, AISummary, Topic, Subscription, ContactMessage, PageView, Revenue
 
 
@@ -19,13 +20,41 @@ class PdfUploadWidget(forms.Widget):
         js = ("admin/js/pdf_upload.js",)
 
 
+class DescriptionWidget(forms.Textarea):
+    def render(self, name, value, attrs=None, renderer=None):
+        html = super().render(name, value, attrs, renderer)
+        html += mark_safe(
+            '<button type="button" onclick="'
+            "var d=this.parentElement.querySelector('textarea');"
+            "if(!d.value){""
+            "var e=document.getElementById('id_exam');"
+            "var s=document.getElementById('id_subject');"
+            "var y=document.getElementById('id_year');"
+            "var ex=e?e.options[e.selectedIndex].text:'';"
+            "var sj=s?s.value:'';"
+            "var yr=y?y.value:'';"
+            "var tmpl=["
+            "'Looking for '+ex+' '+yr+' '+sj+' question paper? Download the official PYQ PDF for free. Ideal for practicing and understanding the exam pattern before the actual test.',"
+            "'Download '+ex+' '+yr+' '+sj+' previous year question paper PDF. Practice with real exam questions to boost your preparation and score higher.',"
+            "'Free '+ex+' '+yr+' '+sj+' question paper PDF download. Practice '+sj+' questions from the actual '+ex+' exam to improve your performance.',"
+            "'Prepare for '+ex+' with the official '+yr+' '+sj+' question paper. Download the PDF and practice from the real exam. Completely free.',"
+            "'Get the '+ex+' '+yr+' '+sj+' PYQ PDF for free. Solve actual exam questions and build confidence for your upcoming '+ex+' test.',"
+            "];"
+            "var idx=Math.abs((ex+sj+yr).split('').reduce(function(a,c){return a+c.charCodeAt(0)},0))%tmpl.length;"
+            "d.value=tmpl[idx];"
+            "}this.textContent='Done!';"
+            '" style="margin-top:4px;padding:4px 12px;cursor:pointer;border:1px solid #ccc;border-radius:4px;background:#fff">Generate</button>'
+        )
+        return html
+
+
 class PaperForm(forms.ModelForm):
     pdf_key = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = Paper
         fields = "__all__"
-        widgets = {"pdf_file": PdfUploadWidget}
+        widgets = {"pdf_file": PdfUploadWidget, "description": DescriptionWidget}
 
     def save(self, commit=True):
         instance = super().save(commit=False)
